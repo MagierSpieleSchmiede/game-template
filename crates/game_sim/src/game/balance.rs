@@ -1,4 +1,4 @@
-//! The central balance resource (ADR-0010): every gameplay constant lives
+//! The central balance resource of the example game (ADR-0010): every gameplay constant lives
 //! here, never as a magic number inside a system.
 
 use bevy::prelude::*;

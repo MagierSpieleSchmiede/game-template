@@ -22,6 +22,11 @@ pub struct SimId(pub i64);
 pub struct SimIdCounter(i64);
 
 impl SimIdCounter {
+    /// The last ID handed out; 0 before the first.
+    pub fn last(&self) -> i64 {
+        self.0
+    }
+
     /// The next free ID.
     pub fn allocate(&mut self) -> SimId {
         self.0 += 1;

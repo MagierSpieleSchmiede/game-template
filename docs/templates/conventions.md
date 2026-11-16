@@ -23,7 +23,7 @@ title: "Conventions — how pages, ADRs and P-entries are written"
 
 ## ADRs
 
-One decision per ADR, following [[adr-nnnn|ADR template]], with a row in [[decisions|Decisions]]. Status is `proposed` or `accepted`; an accepted ADR is only superseded by a new ADR.
+One decision per ADR, following [[adr-nnnn|ADR template]], with a row in [[decisions|Decisions]]. Status is `proposed`, `accepted`, `default` or `superseded` (meanings in [[decisions|Decisions]]); an accepted ADR is only superseded by a new ADR. A `default` ADR adds a **To replace** section naming the code and docs it owns (ADR-0012).
 
 ## P-entries
 

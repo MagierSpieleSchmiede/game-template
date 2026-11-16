@@ -3,7 +3,7 @@ title: "ADR-0011 — Rust with Bevy and Avian"
 ---
 # ADR-0011 — Rust with Bevy and Avian
 
-**Status:** accepted
+**Status:** accepted; the Avian part is a template default, see ADR-0015
 
 **Context:** The architecture needs a game engine that runs gameplay headless in a fixed timestep, serialises state cheaply, builds for desktop, mobile and web, and stays debuggable down to the source. Proprietary engines fight the deterministic-simulation design; most others do not reach the platforms.
 

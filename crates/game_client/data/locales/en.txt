@@ -1,0 +1,7 @@
+# English texts. One `key = value` per line; `{name}` is filled in by the code.
+# Bevy's built-in font covers ASCII only; load a font asset before using other characters.
+# Every visible text goes through a key here (AGENTS.md: no visible text in code).
+menu-title = Game Template
+menu-start = Press Enter or Start to play
+paused = Paused - press Esc or Start to continue
+debug-overlay = tick {tick} | state {hash} | {fps} fps

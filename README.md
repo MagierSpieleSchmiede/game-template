@@ -8,13 +8,15 @@
 Use this repository as a template for a new game (GitHub: *Use this template*).
 It ships the decisions and structure that every game of ours builds on:
 
-- **Rust** with [Bevy](https://bevy.org) and [Avian](https://github.com/avianphysics/avian) for physics queries.
+- **Rust** with [Bevy](https://bevy.org) (and [Avian](https://github.com/avianphysics/avian) for physics, as a template default).
+- **Genre-neutral core, replaceable example:** the simulation core (ticks, intents, snapshots, state hashes, replays, rollback, observation) knows no genre; a small example game (units on an arena) and a playable client shell (menu, pause, keyboard/gamepad actions, localisation, debug overlay) show it working.
+- **Template defaults:** genre-dependent decisions (netcode model, tick rate, physics, the example game, the client shell) are ADRs with status `default` — working code that each game accepts, replaces or drops.
 - **A deterministic, headless tick simulation** in its own crate (`game_sim`):
   same start state, same inputs, same seed → same end state, byte for byte.
 - **One seeded RNG resource** for all randomness in the simulation.
-- **Rollback-ready design**: serializable intents, ticks instead of seconds,
-  stable IDs instead of entity indices — the foundation for rollback netcode
-  with a server as referee.
+- **Snapshots, replays and rollback**, tested: restoring a snapshot and
+  re-running, playing back a recording, and rolling back a late intent all
+  reach the same state hash.
 - **A documented vault** (`docs/`, published as a website with Quartz):
   specification, architecture, decisions (ADRs), open problems, and a
   handover page ([Status](docs/status.md)) that every session reads first.
@@ -27,8 +29,10 @@ It ships the decisions and structure that every game of ours builds on:
    `docs/status.md` for your game; keep the structure and conventions.
 3. Adjust `site/quartz.config.ts` (title, `baseUrl`) and the deploy workflow to
    your repository name.
-4. Delete the ADRs that do not apply to your game — but think twice before you
-   do: they are the solid decisions (see `docs/decisions/decisions.md`).
+4. Decide every template default (status `default` in
+   `docs/decisions/decisions.md`): accept, replace or drop it, following the
+   ADR's *To replace* section. Start with `crates/game_sim/src/game/`, the
+   example game, whose `mod.rs` documents what the core needs from a game.
 
 ## Repository layout
 
@@ -44,9 +48,11 @@ It ships the decisions and structure that every game of ours builds on:
 ## Building
 
 ```sh
-cargo run --release --package game_client
+cargo run --package game_client   # Enter/Start to play, WASD/stick to move, Esc/Start to pause, F3/Select for the overlay
 cargo test
 ```
+
+On Linux the client needs `libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev`.
 
 The simulation runs headless and builds for `wasm32-unknown-unknown`, so it can
 be tested without a window and embedded anywhere.

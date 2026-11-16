@@ -20,4 +20,6 @@ title: "ADR-nnnn — <decision in one sentence>"
 **Rejected alternative:** <what not, and exactly why>
 
 **Consequences:** <what the decision costs and enables>
+
+**To replace:** <only for status `default`: the files and docs this decision owns, and what to change to replace or drop it>
 ```

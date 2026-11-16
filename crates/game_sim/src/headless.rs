@@ -3,11 +3,11 @@
 //! (`docs/testing/headless-integration-test.md`). Lives beside the simulation
 //! plugin, not in it.
 
-use bevy::app::{App, Startup, TaskPoolPlugin};
+use bevy::app::{App, TaskPoolPlugin};
 use bevy::time::{TimePlugin, TimeUpdateStrategy};
 
 use crate::SimPlugin;
-use crate::scenario::{Scenario, spawn_scenario};
+use crate::scenario::Scenario;
 
 /// An app of only the simulation, for `scenario`, that has not run a tick yet.
 ///
@@ -19,8 +19,7 @@ pub fn headless_app(scenario: Scenario) -> App {
     let mut app = App::new();
     app.add_plugins((TaskPoolPlugin::default(), TimePlugin, SimPlugin))
         .insert_resource(TimeUpdateStrategy::FixedTimesteps(1))
-        .insert_resource(scenario)
-        .add_systems(Startup, spawn_scenario);
+        .insert_resource(scenario);
     app.finish();
     app.cleanup();
     app.update();

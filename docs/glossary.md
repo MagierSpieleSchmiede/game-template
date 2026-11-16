@@ -12,7 +12,11 @@ title: "Glossary — terms from intent to rollback"
 | **Observation** | The one function through which HUD, AI, add-ons and the network read simulation state, filtered by visibility. |
 | **SimId** | A stable ID for simulation entities; ordering and serialisation key on it, never on `Entity`. |
 | **SimRng** | The one seeded RNG resource; the only randomness source in the simulation. |
-| **Scenario** | The complete start state of a run: seed, units, arena. Same scenario + same inputs = same end state. |
+| **Scenario** | The complete start state of a run: the seed and the game's `Setup`. Same scenario + same inputs = same end state. |
+| **Snapshot** | The whole simulation state as one value (tick, RNG, ID counter, game state); restoring it and re-running the same intents gives the same state. |
+| **State hash** | A platform-independent checksum of a snapshot; equal states hash equally. Compared by determinism tests, replays and desync checks. |
+| **Replay** | A scenario plus the intents of every tick, and the final state hash playback must reach. |
+| **Template default** | An ADR with status `default`: a genre-dependent decision the template ships working code for, decided per game (ADR-0012). |
 | **Rollback** | Netcode technique: a client predicts ahead and rewinds to a confirmed state when a late input arrives. |
 | **Referee** | The server that decides in conflicts; each client only computes what it is allowed to see. |
 | **ADR** | Architecture Decision Record: one decision, its context, the rejected alternative, its consequences. |
