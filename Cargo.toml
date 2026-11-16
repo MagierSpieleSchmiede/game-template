@@ -1,0 +1,19 @@
+[workspace]
+resolver = "3"
+members = ["crates/game_sim", "crates/game_client"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.97.1"
+license = "MIT"
+
+# Versions live here; each crate picks its own features (ADR-0005).
+[workspace.dependencies]
+avian3d = { version = "0.8.0", default-features = false }
+bevy = { version = "0.20.1", default-features = false }
+serde = { version = "1", features = ["derive"] }
+game_sim = { path = "crates/game_sim" }
+
+[profile.dev]
+opt-level = 1

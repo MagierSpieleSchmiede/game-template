@@ -1,0 +1,17 @@
+[package]
+name = "game_client"
+description = "The game client: presentation, input, HUD, localisation"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "game_client"
+path = "src/main.rs"
+
+[dependencies]
+game_sim.workspace = true
+# The client is the one crate that renders: it uses Bevy with default features
+# (window, renderer, winit); the simulation stays free of them (ADR-0005).
+bevy = { version = "0.20.1" }
