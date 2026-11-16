@@ -11,7 +11,9 @@ What it takes:
 - **One seeded RNG** (ADR-0004): `SimRng`, Xoshiro256\*\* with SplitMix64, seeded from the scenario. No other randomness — enforced by `clippy.toml`.
 - **No hash maps** in the simulation: `HashMap`/`HashSet` iterate in random order; `BTreeMap`/`BTreeSet` instead (also enforced by `clippy.toml`).
 - **Ordering by `SimId`** (ADR-0008): never by `Entity`.
-- **Floating point discipline:** the same operations in the same order on all platforms; cross-platform floating-point determinism for real PvP is an open question (see the problem log).
+- **Floating point discipline:** the same operations in the same order on all platforms; only operations IEEE 754 defines exactly (`+ - * /`, `sqrt`), no `sin`, `cos`, `powf` and the like, whose results come from the platform's maths library; cross-platform floating-point determinism for real PvP is an open question (see the problem log).
 - **No clocks:** no `Instant::now`, no `SystemTime::now` in the simulation; count ticks.
+- **One tick rate:** `SimPlugin` sets the fixed timestep to `TICKS_PER_SECOND` (Bevy's default is 64 Hz); systems use `TICK_SECONDS`, never `Time`.
+- **One seeding point:** `spawn_scenario` seeds `SimRng` from the scenario and draws IDs from the `SimIdCounter` resource, for the client and the headless app alike.
 
 How it is tested: [[determinism-test|Determinism test]]. What it enables: [[network|Network]].

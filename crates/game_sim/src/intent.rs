@@ -26,7 +26,9 @@ impl IntentBuffer {
     }
 }
 
-/// What a player (or AI, or add-on) wants to do in one tick. Plain data only.
+/// What a player (or AI, or add-on) wants a unit to do from the next tick on.
+/// Plain data only. A `Move` sets the unit's velocity until the next intent
+/// for that unit replaces it.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Intent {
     /// The acting unit's simulation ID.
@@ -36,7 +38,7 @@ pub struct Intent {
 }
 
 /// The kinds of things a unit can want in a tick. Keep variants stable once
-/// they travel over the network (see `docs/architecture/serialization-ids.md`).
+/// they travel over the network (see `docs/architecture/serialization-and-ids.md`).
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub enum Action {
     /// Move along the given direction, magnitude in `[0, 1]`.

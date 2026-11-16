@@ -7,7 +7,6 @@ use bevy::app::{App, Startup, TaskPoolPlugin};
 use bevy::time::{TimePlugin, TimeUpdateStrategy};
 
 use crate::SimPlugin;
-use crate::rng::SimRng;
 use crate::scenario::{Scenario, spawn_scenario};
 
 /// An app of only the simulation, for `scenario`, that has not run a tick yet.
@@ -20,7 +19,6 @@ pub fn headless_app(scenario: Scenario) -> App {
     let mut app = App::new();
     app.add_plugins((TaskPoolPlugin::default(), TimePlugin, SimPlugin))
         .insert_resource(TimeUpdateStrategy::FixedTimesteps(1))
-        .insert_resource(SimRng::seeded(scenario.seed))
         .insert_resource(scenario)
         .add_systems(Startup, spawn_scenario);
     app.finish();
