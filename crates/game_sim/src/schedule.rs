@@ -2,7 +2,7 @@
 //! in `FixedUpdate`, and the sets run in this order every tick
 //! (`docs/architecture/simulation-model.md`, invariant 2).
 
-use bevy::ecs::schedule::IntoScheduleConfigs;
+use bevy::ecs::schedule::{InternedSystemSet, IntoScheduleConfigs, ScheduleConfigs};
 use bevy::ecs::system::ScheduleSystem;
 use bevy::prelude::*;
 
@@ -26,13 +26,29 @@ pub enum SimSet {
     Cleanup,
 }
 
-/// The whole tick chain, in order. `SimPlugin` adds this to `FixedUpdate`.
-pub fn tick_chain() -> impl IntoScheduleConfigs<ScheduleSystem, ()> {
+/// The sets in their fixed order. `SimPlugin` configures these in
+/// `FixedUpdate`, so a system added to any set runs after every earlier set,
+/// whichever sets are populated.
+pub fn sim_sets() -> impl IntoScheduleConfigs<InternedSystemSet, ()> {
+    (
+        SimSet::Intent,
+        SimSet::Values,
+        SimSet::Movement,
+        SimSet::Damage,
+        SimSet::Visibility,
+        SimSet::Cleanup,
+    )
+        .chain()
+}
+
+/// The systems of the tick chain, each in its set. `SimPlugin` adds these to
+/// `FixedUpdate`; their order comes from [`sim_sets`].
+pub fn tick_chain() -> ScheduleConfigs<ScheduleSystem> {
     (
         apply_intents.in_set(SimSet::Intent),
         integrate_movement.in_set(SimSet::Movement),
     )
-        .chain()
+        .into_configs()
 }
 
 /// Applies the queued intents: each `Move` sets the unit's velocity for this
@@ -62,15 +78,18 @@ fn apply_intents(
     }
 }
 
-/// Moves every unit by its velocity, clamped to the arena.
+/// Moves every unit by its velocity, clamped to the arena disc on the x/z
+/// floor (y is up and is left alone).
 fn integrate_movement(balance: Res<Balance>, mut units: Query<&mut Unit>) {
-    let delta = 1.0 / crate::TICKS_PER_SECOND as f32;
     for mut unit in &mut units {
-        let step = unit.velocity * delta;
+        let step = unit.velocity * crate::TICK_SECONDS;
         unit.position += step;
-        let radius = unit.position.truncate().length();
+        let floor = Vec2::new(unit.position.x, unit.position.z);
+        let radius = floor.length();
         if radius > balance.arena_radius {
-            unit.position *= balance.arena_radius / radius;
+            let clamped = floor * (balance.arena_radius / radius);
+            unit.position.x = clamped.x;
+            unit.position.z = clamped.y;
         }
     }
 }

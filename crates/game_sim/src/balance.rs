@@ -12,6 +12,10 @@ pub struct Balance {
     pub move_speed: f32,
     /// Radius of the arena floor in metres.
     pub arena_radius: f32,
+    /// Distance from the arena centre at which scenario units spawn, in metres.
+    pub spawn_radius: f32,
+    /// Starting health of a unit, in thousandths.
+    pub unit_health: i64,
 }
 
 impl Default for Balance {
@@ -19,6 +23,8 @@ impl Default for Balance {
         Self {
             move_speed: 6.0,
             arena_radius: 20.0,
+            spawn_radius: 10.0,
+            unit_health: 1000,
         }
     }
 }

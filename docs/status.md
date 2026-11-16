@@ -8,12 +8,12 @@ title: "Status — handover: what was last done and what comes next"
 
 ## Last done
 
-**Template created (game-template):**
+**Review fixes (branch `dev-review-fixes`):**
 
-- Workspace with `crates/game_sim` (deterministic, headless tick simulation) and `crates/game_client` (presentation skeleton).
-- `SimRng` (Xoshiro256\*\* with SplitMix64, seeded from the scenario), `SimId`, `Intent`/`IntentBuffer`, `Balance`, `Scenario`, the tick chain with `SimSet`s, and a headless app driver.
-- Tests: determinism (same scenario → same end state), seed divergence, headless run without window; `clippy.toml` forbids other randomness, clocks and hash maps in the simulation.
-- Vault set up in English; ADRs 0001–0010 accepted; CI and vault deploy workflows in place.
+- `SimId` is now its own component, spawned next to `Unit` (before, `apply_intents` found no unit and every intent was dropped); IDs come from the `SimIdCounter` resource.
+- Arena clamp works on the x/z floor (it used x/y); `SimPlugin` sets the fixed timestep to 60 Hz (Bevy's default is 64); `spawn_scenario` seeds `SimRng` from the scenario, so the client honours the seed; spawn directions without `sin`/`cos`; the `SimSet`s are chained.
+- Tests: movement, arena, tick rate, spawn counter; the determinism test now orders by `SimId`, checks that units moved, and compares `state_hash` with a committed value on every CI platform.
+- ADRs 0001–0011 accepted.
 
 ## Next task
 

@@ -52,6 +52,14 @@ impl SimRng {
     }
 }
 
+impl SimRng {
+    /// Uniform value in `[0, 1)` with 24 bits of precision, converted
+    /// exactly (every value is representable in an `f32`).
+    pub fn unit_f32(&mut self) -> f32 {
+        (self.next_u64() >> 40) as f32 / (1u32 << 24) as f32
+    }
+}
+
 impl Default for SimRng {
     fn default() -> Self {
         Self::seeded(0)
@@ -90,6 +98,15 @@ mod tests {
         let mut a = SimRng::seeded(1);
         let mut b = SimRng::seeded(2);
         assert_ne!(a.next_u64(), b.next_u64());
+    }
+
+    #[test]
+    fn unit_f32_stays_in_range() {
+        let mut rng = SimRng::seeded(7);
+        for _ in 0..1000 {
+            let v = rng.unit_f32();
+            assert!((0.0..1.0).contains(&v));
+        }
     }
 
     #[test]
