@@ -15,7 +15,7 @@ A playable prototype that proves the architecture: units in an arena, movement, 
 | What | Choice |
 | --- | --- |
 | Language | Rust (ADR-0011) |
-| Engine | Bevy, Avian for physics queries (ADR-0011) |
+| Engine | Bevy (ADR-0011); Avian for physics is a template default (ADR-0015) |
 | Simulation | `game_sim`, deterministic ticks in `FixedUpdate` (ADR-0001) |
 | Tests | `cargo test`, headless app, determinism test |
 | CI | fmt, clippy, test on desktop; `cargo check` of the sim for wasm32, Android, iOS |
@@ -25,7 +25,7 @@ A playable prototype that proves the architecture: units in an arena, movement, 
 
 In scope: tick chain, intents, one arena, units, movement, one ability, health, a win condition, minimal presentation (camera, HUD), localisation-ready text.
 
-Out of scope (see [[extension-points|Extension points]]): network, AI/RL, add-ons, menus, audio, save games, animation from asset files.
+Out of scope (see [[extension-points|Extension points]]): network transport, AI/RL, add-ons, audio, save files, animation from asset files. Already in the template: menu/pause screens, input actions, localisation, snapshots, replays, headless rollback.
 
 ## Requirements
 

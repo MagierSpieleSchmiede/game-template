@@ -3,7 +3,7 @@ title: "Network — rollback with the server as referee"
 ---
 # Network — rollback with the server as referee
 
-PvP is designed, not built yet. The decision (ADR-0006): **rollback netcode**, with a **server as referee**.
+PvP is designed, not built yet. The template default (ADR-0006, decided per game): **rollback netcode**, with a **server as referee**. The rollback itself exists headless (`game_sim::rollback`, tested); transport and server do not.
 
 ```text
 client A ──intent──▶ ┌─────────┐ ◀──intent── client B

@@ -13,7 +13,9 @@ What it takes:
 - **Ordering by `SimId`** (ADR-0008): never by `Entity`.
 - **Floating point discipline:** the same operations in the same order on all platforms; only operations IEEE 754 defines exactly (`+ - * /`, `sqrt`), no `sin`, `cos`, `powf` and the like, whose results come from the platform's maths library; cross-platform floating-point determinism for real PvP is an open question (see the problem log).
 - **No clocks:** no `Instant::now`, no `SystemTime::now` in the simulation; count ticks.
-- **One tick rate:** `SimPlugin` sets the fixed timestep to `TICKS_PER_SECOND` (Bevy's default is 64 Hz); systems use `TICK_SECONDS`, never `Time`.
-- **One seeding point:** `spawn_scenario` seeds `SimRng` from the scenario and draws IDs from the `SimIdCounter` resource, for the client and the headless app alike.
+- **One tick rate:** `SimPlugin` sets the fixed timestep to `TICKS_PER_SECOND` (Bevy's default is 64 Hz; the value 60 is a template default, ADR-0014); systems use `TICK_SECONDS`, never `Time`.
+- **One seeding point:** `scenario::start_run` seeds `SimRng` from the scenario before the game spawns, for the client and the headless app alike; IDs come from the `SimIdCounter` resource.
+- **Intents in actor order:** `TickIntents` is sorted by `SimId`, not by arrival.
+- **Complete snapshots:** everything that changes during a run is captured by `Snapshot` (tick, RNG, ID counter, the game's state); `tests/snapshot.rs` proves it by re-running from a restored snapshot.
 
 How it is tested: [[determinism-test|Determinism test]]. What it enables: [[network|Network]].

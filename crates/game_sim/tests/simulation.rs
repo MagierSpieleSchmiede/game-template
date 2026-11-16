@@ -3,16 +3,16 @@ use std::time::Duration;
 use bevy::prelude::*;
 use bevy::time::Fixed;
 
-use game_sim::balance::Balance;
+use game_sim::game::{Action, Balance, Setup, Unit};
 use game_sim::headless::{headless_app, step_ticks};
 use game_sim::ids::SimId;
-use game_sim::intent::{Action, Intent, IntentBuffer};
+use game_sim::intent::{Intent, IntentBuffer};
 use game_sim::scenario::Scenario;
-use game_sim::unit::Unit;
+use game_sim::tick::SimTick;
 
 fn push(app: &mut App, unit: i64, action: Action) {
     app.world_mut().resource_mut::<IntentBuffer>().push(Intent {
-        unit: SimId(unit),
+        actor: SimId(unit),
         action,
     });
 }
@@ -73,11 +73,33 @@ fn fixed_timestep_matches_ticks_per_second() {
 fn spawn_counter_continues_after_the_scenario() {
     let mut app = headless_app(Scenario {
         seed: 3,
-        unit_count: 4,
+        setup: Setup { unit_count: 4 },
     });
     let next = app
         .world_mut()
         .resource_mut::<game_sim::ids::SimIdCounter>()
         .allocate();
     assert_eq!(next, SimId(5));
+}
+
+/// The tick counter starts at 0 and counts every tick.
+#[test]
+fn tick_counter_counts_ticks() {
+    let mut app = headless_app(Scenario::default());
+    assert_eq!(*app.world().resource::<SimTick>(), SimTick(0));
+    step_ticks(&mut app, 7);
+    assert_eq!(*app.world().resource::<SimTick>(), SimTick(7));
+}
+
+/// Intents are applied in actor order, whatever order they arrived in: the
+/// last intent per actor wins, independent of arrival between actors.
+#[test]
+fn intents_are_frozen_in_actor_order() {
+    let mut app = headless_app(Scenario::default());
+    push(&mut app, 2, Action::Idle);
+    push(&mut app, 1, Action::Idle);
+    app.update();
+    let frozen = app.world().resource::<game_sim::intent::TickIntents>();
+    let actors: Vec<i64> = frozen.0.iter().map(|i| i.actor.0).collect();
+    assert_eq!(actors, vec![1, 2]);
 }

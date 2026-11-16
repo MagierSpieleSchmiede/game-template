@@ -13,7 +13,7 @@ You are working on a game built from **Magier SpieleSchmiede's game template**: 
 Regardless of the task:
 
 - Do not start writing code unprompted; the maintainer decides when implementation begins.
-- Which ADRs are accepted and which are only *proposed* is listed in `docs/decisions/decisions.md`. Proposed ADRs are planning material; ask before building code on them.
+- Which ADRs are accepted, which are *template defaults* and which are only *proposed* is listed in `docs/decisions/decisions.md`. Proposed ADRs are planning material, and template defaults are open per game (ADR-0012): ask before building new code on either.
 
 ## Look up when the task needs it
 
@@ -58,6 +58,7 @@ cargo test
 - **No key bindings in code.** Input through actions; keyboard/mouse and gamepad equal.
 - **Platforms:** nothing that excludes Windows, Linux, macOS, Android or iOS; `game_sim` must build for `wasm32-unknown-unknown` (no threads, no file system, no system time). Check platforms for every new dependency (`docs/architecture/platforms.md`).
 - **Balance constants** belong in the central balance resource, never as magic numbers in systems.
+- **Core and game stay apart:** the core of `game_sim` (every module except `game/`) and the genre-neutral client modules never name genre concepts (units, health, arenas, vehicles…); they reach the game only through the contract in `crates/game_sim/src/game/mod.rs`.
 - **Scope:** no abstraction that does not serve the "design for" list or is used at least twice. No TODO stubs for core functionality.
 - **`Cargo.lock` is committed.** New dependencies only with justification (an ADR if it is an architecture question).
 - **Branches and `main`:** nobody commits directly to `main`. Everyone works on their own branch `dev-<name>` and creates it themselves; agents work on the branch of the person they work for. Everything reaches `main` via pull request; merge when the maintainer says so.

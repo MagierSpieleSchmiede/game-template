@@ -1,0 +1,10 @@
+# Default bindings: `action = source:Name ...`. Sources: `key` (Bevy KeyCode),
+# `pad` (Bevy GamepadButton). The left stick always feeds the move axis.
+# Keyboard/mouse and gamepad are equal (AGENTS.md); no binding lives in code.
+move-up = key:KeyW key:ArrowUp pad:DPadUp
+move-down = key:KeyS key:ArrowDown pad:DPadDown
+move-left = key:KeyA key:ArrowLeft pad:DPadLeft
+move-right = key:KeyD key:ArrowRight pad:DPadRight
+confirm = key:Enter key:Space pad:South
+pause = key:Escape pad:Start
+toggle-debug = key:F3 pad:Select

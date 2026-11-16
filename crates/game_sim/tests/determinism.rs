@@ -1,18 +1,19 @@
 use bevy::prelude::*;
 
 use game_sim::checksum::state_hash;
+use game_sim::game::{Action, Setup, Unit};
 use game_sim::headless::{headless_app, step_ticks};
 use game_sim::ids::SimId;
-use game_sim::intent::{Action, Intent, IntentBuffer};
+use game_sim::intent::{Intent, IntentBuffer};
 use game_sim::scenario::Scenario;
-use game_sim::unit::Unit;
 
 /// The scripted run of the determinism tests: four units, moves in several
 /// directions (normalisation), long enough to hit the arena edge (clamping).
-fn scripted_run(seed: u64) -> App {
+/// A new game replaces the script with one that exercises its own systems.
+pub fn scripted_run(seed: u64) -> App {
     let mut app = headless_app(Scenario {
         seed,
-        unit_count: 4,
+        setup: Setup { unit_count: 4 },
     });
     let script = [
         (1, Action::Move { x: 1.0, z: 0.0 }),
@@ -28,7 +29,7 @@ fn scripted_run(seed: u64) -> App {
                 (_, a) => a,
             };
             buffer.push(Intent {
-                unit: SimId(unit),
+                actor: SimId(unit),
                 action,
             });
         }
@@ -56,18 +57,13 @@ fn units(app: &mut App) -> Vec<(SimId, Unit)> {
 fn same_scenario_same_end_state() {
     let fresh = units(&mut headless_app(Scenario {
         seed: 42,
-        unit_count: 4,
+        setup: Setup { unit_count: 4 },
     }));
     let (mut a, mut b) = (scripted_run(42), scripted_run(42));
     let (ua, ub) = (units(&mut a), units(&mut b));
 
     assert_eq!(ua.len(), 4);
-    for ((ia, x), (ib, y)) in ua.iter().zip(&ub) {
-        assert_eq!(ia, ib);
-        assert_eq!(x.position, y.position);
-        assert_eq!(x.velocity, y.velocity);
-        assert_eq!(x.health, y.health);
-    }
+    assert_eq!(ua, ub);
     for ((id, end), (_, start)) in ua.iter().zip(&fresh) {
         if id.0 != 4 {
             assert_ne!(end.position, start.position, "unit {id:?} never moved");
@@ -84,7 +80,7 @@ fn same_scenario_same_end_state() {
 fn scripted_run_matches_committed_hash() {
     let hash = state_hash(scripted_run(42).world_mut());
     assert_eq!(
-        hash, 0x22d4_707b_41b4_e07c,
+        hash, 0x04ea_21ca_6db7_cc82,
         "state hash changed: {hash:#018x}"
     );
 }
