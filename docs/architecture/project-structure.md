@@ -7,6 +7,8 @@ title: "Project structure — the crate layout and why each part exists"
 crates/
   game_sim/     the deterministic, headless tick simulation
   game_client/  presentation: window, rendering, input, HUD, localisation
+tools/
+  rename_crates/  `cargo rename-crates <sim> <client>`: renames both crates for a new game
 docs/           the vault
 site/           Quartz build of the vault
 ```
@@ -15,6 +17,7 @@ site/           Quartz build of the vault
 | --- | --- |
 | `game_sim` | Gameplay must run without window, renderer or threads: in tests, on the server, in RL training, as wasm. It builds for `wasm32-unknown-unknown` (ADR-0005, ADR-0009). |
 | `game_client` | The presentation is a replaceable observer; it depends on `game_sim`, never the other way around. |
+| `rename_crates` (`tools/`) | A new game renames both crates once (T-001); by hand that touches Cargo files, `Cargo.lock`, workflows, imports and the vault. The tool replaces the names as whole identifiers in every tracked text file except its own, moves the crate folders, then lets cargo re-sort `Cargo.lock` and rustfmt the imports. It refuses uncommitted changes, so `git diff` shows and `git checkout` undoes the rename. No dependencies. |
 
 Inside `game_sim`, the **core** (genre-neutral, kept by every game):
 

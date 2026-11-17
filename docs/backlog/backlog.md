@@ -25,7 +25,7 @@ The flow per task:
 | [[t-008-client-save-and-load\|T-008]] | Client: save and load, stored per platform | template | — | done |
 | [[t-009-headless-benchmark\|T-009]] | Headless benchmark: ticks per second | template | — | done |
 | [[t-010-client-run-lifecycle\|T-010]] | Client: back to the menu, fresh runs, local player from setup | template | — | done |
-| [[t-011-rename-script\|T-011]] | A script that renames the crates for a new game | template | — | open |
+| [[t-011-rename-script\|T-011]] | A script that renames the crates for a new game | template | — | done |
 | [[t-012-non-ascii-font\|T-012]] | A font asset for texts beyond ASCII | template | — | open |
 | [[t-013-ci-web-build-of-the-client\|T-013]] | CI: build the client for the web | template | — | open |
 | [[t-014-overlay-hash-only-when-visible\|T-014]] | Debug overlay: compute the state hash only while visible | template | — | open |

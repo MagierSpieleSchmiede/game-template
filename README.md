@@ -25,7 +25,9 @@ It ships the decisions and structure that every game of ours builds on:
 
 ## What to do after forking
 
-1. Replace `game-template` / `game_sim` / `game_client` names with your game's name.
+1. Rename the two crates in one step, e.g. `cargo rename-crates dragon_sim dragon_client`
+   (commit first: the tool refuses to run on uncommitted changes), then replace the
+   repository name `game-template` with your game's.
 2. Rewrite `docs/index.md`, `docs/specifications/spec-001-prototype.md` and
    `docs/status.md` for your game; keep the structure and conventions.
 3. Adjust `site/quartz.config.ts` (title, `baseUrl`) and the deploy workflow to
@@ -42,6 +44,7 @@ It ships the decisions and structure that every game of ours builds on:
 | `AGENTS.md` | Start here: workflow rules for humans and AI agents |
 | `crates/game_sim` | The deterministic, headless tick simulation (no rendering) |
 | `crates/game_client` | The client: presentation, input, HUD, localisation |
+| `tools/rename_crates` | `cargo rename-crates`: renames both crates for a new game |
 | `docs/` | The vault: specification, architecture, decisions, problems, status |
 | `site/` | Quartz build of the vault, published to GitHub Pages |
 | `.github/workflows/` | CI (fmt, clippy, test, cross-platform checks) and vault deploy |
