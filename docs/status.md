@@ -8,13 +8,13 @@ title: "Status — handover: what was last done and what comes next"
 
 ## Last done
 
-**External architecture review triaged** (planning only, no code): the README's determinism promise now names its conditions, and [[determinism|Determinism]] distinguishes repeatability, cross-platform and network determinism. New: [[t-016-decide-the-unused-avian-dependency|T-016]] (`avian3d` is a dependency nobody uses), [[t-017-pin-snapshot-completeness-for-resources|T-017]] (the completeness test does not prove that a forgotten *resource* turns it red), and [[p-001-intent-arbitration-and-tick-addressing|P-001]] (networked intents need a tick address and a same-actor arbitration rule). Rejected as scope creep for the template: clock trait, logical/server entity IDs, host/server crates, distributed-server extension point, save migrations; those belong in a game's own ADRs when it needs them.
+**T-017 done:** the contract in `game/mod.rs` now says every run-mutable game resource belongs in `GameState` (captured, restored, hashed, reset by `spawn`). `tests/snapshot.rs` pins it with a test-only `Countdown` resource: left out of the snapshot the completeness check goes red, restored with it the check stays green. [[determinism|Determinism]] now says what the check catches (state that feeds back into the hash within 40 ticks) and what it cannot (presentation-only state, later feedback). No production code changed.
 
 T-015 is still in progress: web checked in headless Chromium, Android and iOS not yet compiled or run (see the task page).
 
 ## Next task
 
-**T-016** (a maintainer decision, then a small change) or **T-017** (tests first); otherwise finish T-015 on a device, or **adapt the template to your game** ([[t-001-adapt-the-template|T-001]]).
+**T-016** (a maintainer decision first: keep, drop, or use `avian3d`); otherwise finish T-015 on a device, or **adapt the template to your game** ([[t-001-adapt-the-template|T-001]]).
 
 - **Read for that:** the task page's *Read for that* line; for T-015: [[t-015-storage-backends-for-mobile-and-web|T-015]] (what is still open); for T-001: [[decisions|Decisions]] and the default ADRs, [[spec-001-prototype|Spec 001 template]], [[conventions|Conventions]].
 - **Tests first:** keep the determinism test green after every change to the simulation.
@@ -28,6 +28,7 @@ T-015 is still in progress: web checked in headless Chromium, Android and iOS no
 - A save does not record the local player; loading keeps the `RunSetup`'s. A multiplayer game must store or negotiate the seat.
 - A full debug build with tests is ~27 GB of `target/`; a trial rename builds everything again under the new names and fills the session disk: `cargo clean` between the two.
 - The rename tool rewrites prose too, including history in the vault; it does not touch the repository name `game-template` (site config, deploy workflow, README badge): that stays manual in T-001. The save folder follows the client crate name (`storage::APP_FOLDER`).
+- The default `cargo` here is 1.97.0 and refuses the workspace: run every gate as `cargo +1.97.1 …`. A full `cargo test` after clippy ran out of session disk at ~25 GB (`linking with cc failed`); `cargo clean` first, then the tests alone.
 - `target/` grows past the 20 GB limit fast: this session hit a full disk at ~34 GB of stale artefacts; after the gates it was 27 GB and was cleaned.
 - Seen in a window (Xvfb, software Vulkan): the menu renders in Noto Sans with `·`. Pause screen (`—`) and overlay (F3) not yet looked at: synthetic keys did not reach the window. Bevy's own Fira Mono subset still ships (the `default_font` feature); dropping it means listing Bevy's features by hand.
 - A locale in a script beyond Latin/Greek/Cyrillic fails the coverage test: add a second font and use a font list (`FontSource::List`), see ADR-0016.

@@ -19,6 +19,14 @@
 //!
 //! Every simulation entity carries a [`SimId`]; snapshots despawn everything
 //! with one before [`restore`].
+//!
+//! **Run-mutable resources** (anything a run changes: a score, a timer,
+//! weather, objectives) belong in [`GameState`] like components do: captured,
+//! restored, hashed in [`GameState::hash_into`], and reset by [`spawn`]. Only
+//! resources that never change during a run, like [`Balance`], stay out. A
+//! forgotten one breaks saves, rollback and replays silently; the
+//! completeness test (`tests/snapshot.rs`) only catches it once it feeds back
+//! into hashed state. The example game has no such resource.
 
 mod balance;
 mod systems;
