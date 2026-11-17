@@ -8,7 +8,7 @@ title: "Status — handover: what was last done and what comes next"
 
 ## Last done
 
-**Branches tidied up:** the template work T-009 to T-015 (stranded on `dev-rename-script` after PR #7 went into an already merged branch) is now in `main` via PR #8. AGENTS.md now says **one branch per person** (`dev-<person>`), which agents reuse; the per-task `dev-*` branches are deleted. The maintainer's branch is `dev-daniel`.
+**Branches tidied up:** the template work T-009 to T-015 (stranded on `dev-rename-script` after PR #7 went into an already merged branch) is now in `main` via PR #8. AGENTS.md now says **one branch per person** (`dev-<person>`), which agents reuse; the old per-task `dev-*` branches are all contained in `main` and can be deleted. The maintainer's branch is `dev-daniel`.
 
 T-015 is still in progress: web checked in headless Chromium, Android and iOS not yet compiled or run (see the task page).
 
