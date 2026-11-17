@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+    <channel>
+      <title>Game Template</title>
+      <link>https://magierspieleschmiede.github.io/game-template</link>
+      <description>Last 10 notes on Game Template</description>
+      <generator>Quartz -- quartz.jzhao.xyz</generator>
+      <item>
+    <title>Status — handover: what was last done and what comes next</title>
+    <link>https://magierspieleschmiede.github.io/game-template/status</link>
+    <guid>https://magierspieleschmiede.github.io/game-template/status</guid>
+    <description><![CDATA[ Status — handover: what was last done and what comes next What this page is for It is the handover from one session to the next, so nobody has to read the whole vault. ]]></description>
+    <pubDate>Tue, 17 Nov 2026 16:49:28 GMT</pubDate>
+  </item><item>
+    <title>Platforms — targets and what excludes them</title>
+    <link>https://magierspieleschmiede.github.io/game-template/architecture/platforms</link>
+    <guid>https://magierspieleschmiede.github.io/game-template/architecture/platforms</guid>
+    <description><![CDATA[ Platforms — targets and what excludes them Targets: Windows, Linux, macOS, Android, iOS (tier 1: full gates), Web (wasm32) when feasible. ]]></description>
+    <pubDate>Tue, 17 Nov 2026 16:06:13 GMT</pubDate>
+  </item><item>
+    <title>Backlog — all tasks, dependencies, and the flow per item</title>
+    <link>https://magierspieleschmiede.github.io/game-template/backlog/backlog</link>
+    <guid>https://magierspieleschmiede.github.io/game-template/backlog/backlog</guid>
+    <description><![CDATA[ Backlog — all tasks, dependencies, and the flow per item One page per task in this folder, following the task template, and one row per task in the table below; the next free number is T-016. ]]></description>
+    <pubDate>Tue, 17 Nov 2026 16:06:13 GMT</pubDate>
+  </item><item>
+    <title>T-008 — Client: save and load, stored per platform</title>
+    <link>https://magierspieleschmiede.github.io/game-template/backlog/t-008-client-save-and-load</link>
+    <guid>https://magierspieleschmiede.github.io/game-template/backlog/t-008-client-save-and-load</guid>
+    <description><![CDATA[ T-008 — Client: save and load, stored per platform Status: done · Scope: template · Depends on: — Read for that: ADR-0017, Platforms What: The simulation produces save bytes (SaveGame::to_bytes) but the client stores none. ]]></description>
+    <pubDate>Tue, 17 Nov 2026 16:06:13 GMT</pubDate>
+  </item><item>
+    <title>T-015 — Client storage backends for Android, iOS and the web</title>
+    <link>https://magierspieleschmiede.github.io/game-template/backlog/t-015-storage-backends-for-mobile-and-web</link>
+    <guid>https://magierspieleschmiede.github.io/game-template/backlog/t-015-storage-backends-for-mobile-and-web</guid>
+    <description><![CDATA[ T-015 — Client storage backends for Android, iOS and the web Status: in progress · Scope: template · Depends on: T-008 Read for that: Platforms, ADR-0016, crates/game_client/src/storage.rs What: Saves are files on desktop, but on Android, iOS and the web the client falls back to MemoryStore, so a sa... ]]></description>
+    <pubDate>Tue, 17 Nov 2026 16:06:13 GMT</pubDate>
+  </item><item>
+    <title>ADR-0016 — The client shell: screens, input actions, localisation, debug overlay</title>
+    <link>https://magierspieleschmiede.github.io/game-template/decisions/adr-0016-client-shell</link>
+    <guid>https://magierspieleschmiede.github.io/game-template/decisions/adr-0016-client-shell</guid>
+    <description><![CDATA[ ADR-0016 — The client shell: screens, input actions, localisation, debug overlay Status: default (ADR-0012) Context: Every game needs a screen flow, device-independent input, translated texts and a way to see the simulation’s state while playing — and the rules forbid visible text and key bindings i... ]]></description>
+    <pubDate>Tue, 17 Nov 2026 16:06:13 GMT</pubDate>
+  </item><item>
+    <title>T-014 — Debug overlay: compute the state hash only while visible</title>
+    <link>https://magierspieleschmiede.github.io/game-template/backlog/t-014-overlay-hash-only-when-visible</link>
+    <guid>https://magierspieleschmiede.github.io/game-template/backlog/t-014-overlay-hash-only-when-visible</guid>
+    <description><![CDATA[ T-014 — Debug overlay: compute the state hash only while visible Status: done · Scope: template · Depends on: — Read for that: ADR-0016 What: The client computes a full state hash after every tick just for the debug overlay. ]]></description>
+    <pubDate>Tue, 17 Nov 2026 14:54:02 GMT</pubDate>
+  </item><item>
+    <title>Benchmarks — performance before and after</title>
+    <link>https://magierspieleschmiede.github.io/game-template/testing/benchmarks</link>
+    <guid>https://magierspieleschmiede.github.io/game-template/testing/benchmarks</guid>
+    <description><![CDATA[ Benchmarks — performance before and after Whoever changes the simulation or rendering compares before and after: Simulation: ticks per second of the headless app with a representative scenario (units, abilities, projectiles). ]]></description>
+    <pubDate>Tue, 17 Nov 2026 14:54:02 GMT</pubDate>
+  </item><item>
+    <title>T-013 — CI: build the client for the web</title>
+    <link>https://magierspieleschmiede.github.io/game-template/backlog/t-013-ci-web-build-of-the-client</link>
+    <guid>https://magierspieleschmiede.github.io/game-template/backlog/t-013-ci-web-build-of-the-client</guid>
+    <description><![CDATA[ T-013 — CI: build the client for the web Status: done · Scope: template · Depends on: — Read for that: Platforms What: CI checks only the simulation for wasm32-unknown-unknown. ]]></description>
+    <pubDate>Tue, 17 Nov 2026 13:56:14 GMT</pubDate>
+  </item><item>
+    <title>Project structure — the crate layout and why each part exists</title>
+    <link>https://magierspieleschmiede.github.io/game-template/architecture/project-structure</link>
+    <guid>https://magierspieleschmiede.github.io/game-template/architecture/project-structure</guid>
+    <description><![CDATA[ Project structure — the crate layout and why each part exists crates/ game_sim/ the deterministic, headless tick simulation game_client/ presentation: window, rendering, input, HUD, localisation tools/ rename_crates/ `cargo rename-crates &lt;sim&gt; &lt;client&gt;`: renames both crates for a new gam... ]]></description>
+    <pubDate>Tue, 17 Nov 2026 13:34:20 GMT</pubDate>
+  </item>
+    </channel>
+  </rss>
