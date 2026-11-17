@@ -10,7 +10,7 @@ title: "Status — handover: what was last done and what comes next"
 
 **T-013, CI web build of the client (branch `dev-rename-script`, on top of T-012):**
 
-- New CI job `web-client` in `.github/workflows/ci.yml`: `cargo build -p game_client --locked --target wasm32-unknown-unknown` (a full build, so linking is checked too; nothing is run or packaged).
+- New CI job `web-client` in `.github/workflows/ci.yml`: `cargo build -p game_client --locked --target wasm32-unknown-unknown` (a full build, so linking is checked too; nothing is run or packaged). Green on its first run.
 - Locally, `cargo +1.97.1 check -p game_client --target wasm32-unknown-unknown` and the full `cargo build` passed with no code changes and no warnings (the debug `.wasm` is 1.4 GB with debuginfo; a cold build takes over 10 minutes here).
 - [[platforms|Platforms]] says what the web job proves and what it does not (no wasm-bindgen, no page, saves in memory).
 
@@ -29,7 +29,6 @@ title: "Status — handover: what was last done and what comes next"
 - A save does not record the local player; loading keeps the `RunSetup`'s. A multiplayer game must store or negotiate the seat.
 - A full debug build with tests is ~27 GB of `target/`; a trial rename builds everything again under the new names and fills the session disk: `cargo clean` between the two.
 - The rename tool rewrites prose too, including history in the vault; it does not touch the repository name `game-template` (site config, deploy workflow, README badge): that stays manual in T-001. The save folder follows the client crate name (`storage::APP_FOLDER`).
-- Check the first CI run of `web-client` (Actions API, see AGENTS.md); if it is red, read only its build step.
 - Seen in a window (Xvfb, software Vulkan): the menu renders in Noto Sans with `·`. Pause screen (`—`) and overlay (F3) not yet looked at: synthetic keys did not reach the window. Bevy's own Fira Mono subset still ships (the `default_font` feature); dropping it means listing Bevy's features by hand.
 - A locale in a script beyond Latin/Greek/Cyrillic fails the coverage test: add a second font and use a font list (`FontSource::List`), see ADR-0016.
 - Replacing the example game means rewriting `game_sim/src/game/` and `game_client/src/presentation.rs` (keep `Frames`, `observe_restored` and a way to find the local actor in the observation).
