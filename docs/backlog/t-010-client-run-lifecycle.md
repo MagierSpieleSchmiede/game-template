@@ -3,7 +3,7 @@ title: "T-010 — Client: back to the menu, fresh runs, local player from setup"
 ---
 # T-010 — Client: back to the menu, fresh runs, local player from setup
 
-**Status:** open · **Scope:** template · **Depends on:** —
+**Status:** done · **Scope:** template · **Depends on:** —
 
 **Read for that:** ADR-0016, [[project-structure|Project structure]]
 

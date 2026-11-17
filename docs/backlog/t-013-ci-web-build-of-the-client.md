@@ -3,7 +3,7 @@ title: "T-013 — CI: build the client for the web"
 ---
 # T-013 — CI: build the client for the web
 
-**Status:** open · **Scope:** template · **Depends on:** —
+**Status:** done · **Scope:** template · **Depends on:** —
 
 **Read for that:** [[platforms|Platforms]]
 

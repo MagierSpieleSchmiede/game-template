@@ -8,22 +8,28 @@ title: "Status — handover: what was last done and what comes next"
 
 ## Last done
 
-**T-008, client save and load (branch `dev-client-save-load`):**
+**T-015, storage backends for Android, iOS and the web (branch `dev-rename-script`, on top of T-014), in progress:**
 
-- `game_client/src/storage.rs`: `SlotStore` (named byte slots), `FileStore` (user data folder on Windows/Linux/macOS, found from the environment, atomic writes, slot names cannot leave the folder), `MemoryStore` (Android, iOS, web for now).
-- `game_client/src/saving.rs`: actions `save` (F5/North, while playing or paused) and `load` (F9/West, from the menu too); a localised notice for every outcome, one per refusal reason; after loading the presentation re-observes without interpolating.
-- New task T-015: real storage backends for Android, iOS and the web.
+- `storage.rs`: Android uses `FileStore` in the app's internal data folder (`bevy::android::ANDROID_APP`), iOS `FileStore` under `$HOME/Library/Application Support/<app>`, the web a new `WebStore` over `localStorage` (base64). New client deps `base64`, and on wasm32 `web-sys`/`wasm-bindgen`; all already in the graph, no new packages in `Cargo.lock`.
+- Web checked in headless Chromium: a save survives a page reload and F9 restores it. Android and iOS not compiled or run (see the task page).
 
 ## Next task
 
-**Adapt the template to your game** ([[t-001-adapt-the-template|T-001]]), or the next `template` task in the [[backlog|Backlog]] (T-009 onward).
+**Finish T-015 on a device** once a game packages for Android/iOS, or **adapt the template to your game** ([[t-001-adapt-the-template|T-001]]).
 
-- **Read for that:** the task's page; for T-001: [[decisions|Decisions]] and the default ADRs, [[spec-001-prototype|Spec 001 template]], [[conventions|Conventions]].
+- **Read for that:** [[t-015-storage-backends-for-mobile-and-web|T-015]] (what is still open); for T-001: [[decisions|Decisions]] and the default ADRs, [[spec-001-prototype|Spec 001 template]], [[conventions|Conventions]].
 - **Tests first:** keep the determinism test green after every change to the simulation.
 
 ## Hints for the next session
 
-- The toolchain is pinned at 1.97.1 (`rust-version`); if the default `stable` is older, run cargo as `cargo +1.97.1`.
-- Save/load was tested headless only; nobody has played it in a window yet: worth a check on desktop (F5, F9, a damaged `quicksave.save`).
-- Rename `game_sim`/`game_client` everywhere for a new game; the save folder follows the client crate name (`storage::APP_FOLDER`).
-- Replacing the example game means rewriting `game_sim/src/game/` and `game_client/src/presentation.rs` (keep `Frames` and `observe_restored`, the saving module uses them).
+- Running the web client: `cargo build -p game_client --target wasm32-unknown-unknown`, then `wasm-bindgen --target web` (CLI 0.2.130, matching the lock) and a page that imports the generated JS; headless Chromium renders it with `--use-angle=swiftshader`. The debug wasm is ~170 MB after bindgen. `cargo clean --target …` wiped all of `target/`, not just that target.
+- The toolchain is pinned at 1.97.1 (`rust-version`); if the default `stable` is older, run cargo as `cargo +1.97.1` (also `cargo +1.97.1 rename-crates …`).
+- Re-run the benchmark before and after simulation changes, on the same machine; afterwards `cargo clean --release`.
+- Save/load and the run lifecycle were tested headless only; nobody has played them in a window yet: worth a check on desktop (F5, F9, Esc → Q → Enter).
+- A save does not record the local player; loading keeps the `RunSetup`'s. A multiplayer game must store or negotiate the seat.
+- A full debug build with tests is ~27 GB of `target/`; a trial rename builds everything again under the new names and fills the session disk: `cargo clean` between the two.
+- The rename tool rewrites prose too, including history in the vault; it does not touch the repository name `game-template` (site config, deploy workflow, README badge): that stays manual in T-001. The save folder follows the client crate name (`storage::APP_FOLDER`).
+- `target/` grows past the 20 GB limit fast: this session hit a full disk at ~34 GB of stale artefacts; after the gates it was 27 GB and was cleaned.
+- Seen in a window (Xvfb, software Vulkan): the menu renders in Noto Sans with `·`. Pause screen (`—`) and overlay (F3) not yet looked at: synthetic keys did not reach the window. Bevy's own Fira Mono subset still ships (the `default_font` feature); dropping it means listing Bevy's features by hand.
+- A locale in a script beyond Latin/Greek/Cyrillic fails the coverage test: add a second font and use a font list (`FontSource::List`), see ADR-0016.
+- Replacing the example game means rewriting `game_sim/src/game/` and `game_client/src/presentation.rs` (keep `Frames`, `observe_restored` and a way to find the local actor in the observation).

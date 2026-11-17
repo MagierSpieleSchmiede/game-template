@@ -3,7 +3,7 @@ title: "T-011 — A script that renames the crates for a new game"
 ---
 # T-011 — A script that renames the crates for a new game
 
-**Status:** open · **Scope:** template · **Depends on:** —
+**Status:** done · **Scope:** template · **Depends on:** —
 
 **Read for that:** [[project-structure|Project structure]], README
 

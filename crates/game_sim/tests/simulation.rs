@@ -169,3 +169,39 @@ fn intents_for_actors_of_other_players_are_rejected() {
     assert_eq!(rejected.len(), 1);
     assert_eq!(rejected[0].1, Rejection::NotInControl);
 }
+
+/// Starting a run again in a world that already ran one must give the same
+/// state as a fresh app: the old run leaves no units, IDs, control, tick or
+/// RNG behind, and the new run goes on exactly like a fresh one.
+#[test]
+fn start_run_again_starts_from_the_scenario() {
+    let first = Scenario {
+        seed: 1,
+        setup: Setup { unit_count: 5 },
+    };
+    let second = Scenario {
+        seed: 9,
+        setup: Setup { unit_count: 3 },
+    };
+    let mut app = headless_app(first);
+    push(&mut app, 2, Action::Move { x: 1.0, z: 0.0 });
+    step_ticks(&mut app, 40);
+    push(&mut app, 1, Action::Move { x: 0.0, z: 1.0 });
+
+    app.world_mut().insert_resource(second.clone());
+    game_sim::scenario::start_run(app.world_mut());
+
+    let mut fresh = headless_app(second);
+    assert_eq!(*app.world().resource::<SimTick>(), SimTick(0));
+    assert_eq!(
+        game_sim::checksum::state_hash(app.world_mut()),
+        game_sim::checksum::state_hash(fresh.world_mut())
+    );
+    step_ticks(&mut app, 30);
+    step_ticks(&mut fresh, 30);
+    assert_eq!(
+        game_sim::checksum::state_hash(app.world_mut()),
+        game_sim::checksum::state_hash(fresh.world_mut()),
+        "no intent of the old run leaks into the new one"
+    );
+}

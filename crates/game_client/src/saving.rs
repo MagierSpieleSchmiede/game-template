@@ -191,12 +191,17 @@ mod tests {
 
     use super::*;
     use crate::presentation::Frames;
+    use crate::run::RunSetup;
     use crate::storage::MemoryStore;
 
     fn app() -> App {
         let mut app = headless_app(Scenario::default());
         app.insert_resource(Storage(Box::new(MemoryStore::default())))
-            .init_resource::<Frames>();
+            .insert_resource(Frames {
+                hash_wanted: true,
+                ..default()
+            })
+            .init_resource::<RunSetup>();
         app
     }
 
@@ -214,7 +219,11 @@ mod tests {
         load_game(world, QUICKSAVE).unwrap();
         assert_eq!(state_hash(world), saved);
         let frames = world.resource::<Frames>();
-        assert_eq!(frames.hash, saved, "the overlay shows the loaded state");
+        assert_eq!(
+            frames.hash,
+            Some(saved),
+            "the overlay shows the loaded state"
+        );
         assert_eq!(frames.current.as_ref().unwrap().tick.0, 30);
         assert!(
             frames.previous.is_none(),

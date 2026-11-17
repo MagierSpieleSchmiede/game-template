@@ -6,14 +6,16 @@
 //!
 //! | Module | Genre-neutral? |
 //! | --- | --- |
-//! | `screens`, `input`, `localisation`, `overlay`, `kv`, `saving`, `storage` | yes: keep, extend |
+//! | `screens`, `run`, `input`, `localisation`, `font`, `overlay`, `kv`, `saving`, `storage` | yes: keep, extend |
 //! | `presentation` | no: the example game's look; replace with `game_sim::game` |
 
+mod font;
 mod input;
 mod kv;
 mod localisation;
 mod overlay;
 mod presentation;
+mod run;
 mod saving;
 mod screens;
 mod storage;
@@ -21,13 +23,13 @@ mod storage;
 use bevy::prelude::*;
 
 use game_sim::SimPlugin;
-use game_sim::scenario::Scenario;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
+        .add_plugins(font::plugin)
         .add_plugins(SimPlugin)
-        .insert_resource(Scenario::default())
+        .init_resource::<run::RunSetup>()
         .insert_resource(localisation::Localisation::english())
         .add_plugins((
             input::plugin,

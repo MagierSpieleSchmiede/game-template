@@ -7,6 +7,8 @@ title: "Project structure — the crate layout and why each part exists"
 crates/
   game_sim/     the deterministic, headless tick simulation
   game_client/  presentation: window, rendering, input, HUD, localisation
+tools/
+  rename_crates/  `cargo rename-crates <sim> <client>`: renames both crates for a new game
 docs/           the vault
 site/           Quartz build of the vault
 ```
@@ -15,6 +17,7 @@ site/           Quartz build of the vault
 | --- | --- |
 | `game_sim` | Gameplay must run without window, renderer or threads: in tests, on the server, in RL training, as wasm. It builds for `wasm32-unknown-unknown` (ADR-0005, ADR-0009). |
 | `game_client` | The presentation is a replaceable observer; it depends on `game_sim`, never the other way around. |
+| `rename_crates` (`tools/`) | A new game renames both crates once (T-001); by hand that touches Cargo files, `Cargo.lock`, workflows, imports and the vault. The tool replaces the names as whole identifiers in every tracked text file except its own, moves the crate folders, then lets cargo re-sort `Cargo.lock` and rustfmt the imports. It refuses uncommitted changes, so `git diff` shows and `git checkout` undoes the rename. No dependencies. |
 
 Inside `game_sim`, the **core** (genre-neutral, kept by every game):
 
@@ -26,7 +29,7 @@ Inside `game_sim`, the **core** (genre-neutral, kept by every game):
 | `control` | `PlayerId` and `Control`: which player may steer which actor. |
 | `rng` | `SimRng`: the one seeded randomness source (ADR-0004). |
 | `ids` | `SimId` and the `SimIdCounter`: stable IDs (ADR-0008). |
-| `scenario` | The start state of a run, as data; `start_run` seeds the RNG and lets the game spawn. |
+| `scenario` | The start state of a run, as data; `start_run` clears any earlier run, seeds the RNG and lets the game spawn. |
 | `snapshot` | The whole simulation state as a value, and back: save games, rollback, debugging. |
 | `checksum` | The state hash: determinism tests, replay checks, desync detection. |
 | `replay` | Record the intents that arrived each tick; play them back and compare the hash. |
@@ -42,9 +45,11 @@ Inside `game_client`:
 
 | Module | Responsibility | Genre-neutral? |
 | --- | --- | --- |
-| `screens` | Menu → playing ⇄ paused (ADR-0016) | yes |
+| `screens` | Menu → playing ⇄ paused → menu (ADR-0016) | yes |
+| `run` | `RunSetup`: the scenario of the next run, the local player and viewer; starts a run from the menu (ADR-0016) | yes |
 | `input` | Devices → actions; bindings in `data/input/` (ADR-0016) | yes |
 | `localisation`, `kv` | Texts by key from `data/locales/` (ADR-0016) | yes |
+| `font` | The UI font from `data/fonts/` in place of Bevy's ASCII-only default (ADR-0016) | yes |
 | `overlay` | Tick, state hash, frame rate (ADR-0016) | yes |
 | `saving`, `storage` | Save and load actions, refusal notices; named byte slots per platform (ADR-0016) | yes |
 | `presentation` | The example game's camera, visuals and intent (ADR-0013) | no: replace with the game |

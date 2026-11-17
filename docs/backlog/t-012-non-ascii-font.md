@@ -3,7 +3,7 @@ title: "T-012 — A font asset for texts beyond ASCII"
 ---
 # T-012 — A font asset for texts beyond ASCII
 
-**Status:** open · **Scope:** template · **Depends on:** —
+**Status:** done · **Scope:** template · **Depends on:** —
 
 **Read for that:** ADR-0016
 

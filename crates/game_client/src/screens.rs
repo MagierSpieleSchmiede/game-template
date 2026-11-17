@@ -1,10 +1,15 @@
-//! The screen flow (template default, ADR-0016): menu → playing ⇄ paused.
-//! The simulation runs on virtual time, so pausing virtual time pauses it.
+//! The screen flow (template default, ADR-0016): menu → playing ⇄ paused →
+//! menu. Every run started from the menu starts from the [`RunSetup`]'s
+//! scenario. The simulation runs on virtual time, so pausing virtual time
+//! pauses it.
+//!
+//! [`RunSetup`]: crate::run::RunSetup
 
 use bevy::prelude::*;
 
 use crate::input::{ActionState, InputAction};
 use crate::localisation::Localisation;
+use crate::run::start_new_run;
 
 /// Which screen the client shows.
 #[derive(States, Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
@@ -14,7 +19,7 @@ pub enum Screen {
     Menu,
     /// The simulation runs.
     Playing,
-    /// The simulation is paused.
+    /// The simulation is paused; from here, back to the menu.
     Paused,
 }
 
@@ -36,12 +41,16 @@ fn resume_time(mut time: ResMut<Time<Virtual>>) {
 }
 
 fn navigate(
+    mut commands: Commands,
     screen: Res<State<Screen>>,
     actions: Res<ActionState>,
     mut next: ResMut<NextState<Screen>>,
 ) {
     let target = match *screen.get() {
-        Screen::Menu if actions.just_pressed(InputAction::Confirm) => Screen::Playing,
+        Screen::Menu if actions.just_pressed(InputAction::Confirm) => {
+            commands.run_system_cached(start_new_run);
+            Screen::Playing
+        }
         Screen::Playing if actions.just_pressed(InputAction::Pause) => Screen::Paused,
         Screen::Paused
             if actions.just_pressed(InputAction::Pause)
@@ -49,6 +58,7 @@ fn navigate(
         {
             Screen::Playing
         }
+        Screen::Paused if actions.just_pressed(InputAction::QuitToMenu) => Screen::Menu,
         _ => return,
     };
     next.set(target);
@@ -87,6 +97,7 @@ fn spawn_paused(mut commands: Commands, texts: Res<Localisation>) {
         centred_column(),
         children![
             Text::new(texts.text("paused", &[])),
+            Text::new(texts.text("paused-quit", &[])),
             Text::new(texts.text("save-load-hint", &[])),
         ],
     ));
