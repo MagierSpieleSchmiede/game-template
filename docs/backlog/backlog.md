@@ -3,7 +3,7 @@ title: "Backlog — all tasks, dependencies, and the flow per item"
 ---
 # Backlog — all tasks, dependencies, and the flow per item
 
-One page per task in this folder, following the [[t-nnn|task template]], and one row per task in the table below; the next free number is **T-016**. The row is the overview; the page holds what the task is, what to read, and when it is done.
+One page per task in this folder, following the [[t-nnn|task template]], and one row per task in the table below; the next free number is **T-018**. The row is the overview; the page holds what the task is, what to read, and when it is done.
 
 The flow per task:
 
@@ -30,5 +30,7 @@ The flow per task:
 | [[t-013-ci-web-build-of-the-client\|T-013]] | CI: build the client for the web | template | — | done |
 | [[t-014-overlay-hash-only-when-visible\|T-014]] | Debug overlay: compute the state hash only while visible | template | — | done |
 | [[t-015-storage-backends-for-mobile-and-web\|T-015]] | Client storage backends for Android, iOS and the web | template | T-008 | in progress |
+| [[t-016-decide-the-unused-avian-dependency\|T-016]] | Decide whether the template ships Avian while no code uses it | template | — | open |
+| [[t-017-pin-snapshot-completeness-for-resources\|T-017]] | Pin that a game resource missing from the snapshot turns the tests red | template | — | open |
 
 Status is `open`, `in progress` or `done`. Done tasks stay in the table until the milestone closes; then their rows move to the milestone's implementation log and their pages are deleted.

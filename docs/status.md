@@ -8,15 +8,15 @@ title: "Status — handover: what was last done and what comes next"
 
 ## Last done
 
-**Branches tidied up:** the template work T-009 to T-015 (stranded on `dev-rename-script` after PR #7 went into an already merged branch) is now in `main` via PR #8. AGENTS.md now says **one branch per person** (`dev-<person>`), which agents reuse; the old per-task `dev-*` branches are all contained in `main` and can be deleted. The maintainer's branch is `dev-daniel`.
+**External architecture review triaged** (planning only, no code): the README's determinism promise now names its conditions, and [[determinism|Determinism]] distinguishes repeatability, cross-platform and network determinism. New: [[t-016-decide-the-unused-avian-dependency|T-016]] (`avian3d` is a dependency nobody uses), [[t-017-pin-snapshot-completeness-for-resources|T-017]] (the completeness test does not prove that a forgotten *resource* turns it red), and [[p-001-intent-arbitration-and-tick-addressing|P-001]] (networked intents need a tick address and a same-actor arbitration rule). Rejected as scope creep for the template: clock trait, logical/server entity IDs, host/server crates, distributed-server extension point, save migrations; those belong in a game's own ADRs when it needs them.
 
 T-015 is still in progress: web checked in headless Chromium, Android and iOS not yet compiled or run (see the task page).
 
 ## Next task
 
-**Finish T-015 on a device** (a session with a phone connected, once a game packages for Android/iOS), or **adapt the template to your game** ([[t-001-adapt-the-template|T-001]]).
+**T-016** (a maintainer decision, then a small change) or **T-017** (tests first); otherwise finish T-015 on a device, or **adapt the template to your game** ([[t-001-adapt-the-template|T-001]]).
 
-- **Read for that:** [[t-015-storage-backends-for-mobile-and-web|T-015]] (what is still open); for T-001: [[decisions|Decisions]] and the default ADRs, [[spec-001-prototype|Spec 001 template]], [[conventions|Conventions]].
+- **Read for that:** the task page's *Read for that* line; for T-015: [[t-015-storage-backends-for-mobile-and-web|T-015]] (what is still open); for T-001: [[decisions|Decisions]] and the default ADRs, [[spec-001-prototype|Spec 001 template]], [[conventions|Conventions]].
 - **Tests first:** keep the determinism test green after every change to the simulation.
 
 ## Hints for the next session

@@ -16,4 +16,4 @@ client A ──intent──▶ ┌─────────┐ ◀──intent
 - **The server is the referee:** it validates intents, keeps the authoritative tick, and decides conflicts. When client and server disagree, the server wins.
 - **Each client sees only what it may see:** the server sends the observation with the visibility filter of that team ([[observation|Observation]], [[security|Security]]).
 
-Open questions live in the problem log: transport crate, hit rating under latency, direct client connections.
+Open questions live in the problem log: intent tick addressing and arbitration ([[p-001-intent-arbitration-and-tick-addressing|P-001]]), transport crate, hit rating under latency, direct client connections.

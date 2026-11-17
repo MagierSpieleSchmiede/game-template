@@ -5,6 +5,16 @@ title: "Determinism — same seed, same inputs, same end state"
 
 The contract: **same start state, same inputs, same seed → same end state, byte for byte.** It is what makes the game testable without a window, replayable, and the foundation for [[network|rollback netcode]] and RL training.
 
+What exactly is guaranteed, from weakest to strongest:
+
+| Level | Meaning | Status in the template |
+| --- | --- | --- |
+| **Repeatability** | the same executable, same inputs → same end state | guaranteed; pinned by the [[determinism-test\|determinism test]] |
+| **Cross-platform** | different supported platforms and builds → same end state | holds for the example on the CI platforms (the regression replay), as long as the floating-point discipline below is kept; not proven for every f32 computation or compiler setting |
+| **Network** | all participants of a session reach the same state under the sync protocol | depends on the network model a game picks (ADR-0006); rollback and lockstep need cross-platform determinism, a server-authoritative model with corrections only needs repeatability on the server |
+
+Each game states which level it needs in its spec; a game that needs cross-platform determinism for real PvP has the open floating-point question in the [[problem-log|Problem log]] to settle.
+
 What it takes:
 
 - **Ticks, not seconds** (ADR-0003): all durations are integer ticks; `TICKS_PER_SECOND` only converts per-second balance rates.

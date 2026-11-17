@@ -12,7 +12,9 @@ It ships the decisions and structure that every game of ours builds on:
 - **Genre-neutral core, replaceable example:** the simulation core (ticks, intents, snapshots, state hashes, replays, rollback, observation) knows no genre; a small example game (units on an arena) and a playable client shell (menu, pause, keyboard/gamepad actions, localisation, debug overlay) show it working.
 - **Template defaults:** genre-dependent decisions (netcode model, tick rate, physics, the example game, the client shell) are ADRs with status `default` — working code that each game accepts, replaces or drops.
 - **A deterministic, headless tick simulation** in its own crate (`game_sim`):
-  same start state, same inputs, same seed → same end state, byte for byte.
+  same start state, same inputs, same seed → same end state, byte for byte,
+  on the same build, and across the CI platforms as long as the simulation keeps
+  the floating-point discipline ([Determinism](docs/architecture/determinism.md)).
 - **One seeded RNG resource** for all randomness in the simulation.
 - **Snapshots, save and replay files, rollback**, tested: restoring a snapshot
   and re-running, loading a save, playing back a recording, and rolling back a

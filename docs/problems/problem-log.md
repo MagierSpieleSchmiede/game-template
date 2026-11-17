@@ -3,11 +3,11 @@ title: "Problem log — open questions and their next steps"
 ---
 # Problem log — open questions and their next steps
 
-One row per problem; the next free number is **P-001**. A problem gets a page (`problems/p-nnn-<slug>.md`, template: [[p-nnn|P template]]) and a row here, with its next step.
+One row per problem; the next free number is **P-002**. A problem gets a page (`problems/p-nnn-<slug>.md`, template: [[p-nnn|P template]]) and a row here, with its next step.
 
 | P | Problem | Next step | Milestone |
 | --- | --- | --- | --- |
-| — | none | — | — |
+| [[p-001-intent-arbitration-and-tick-addressing\|P-001]] | Networked intents need a tick address and an arbitration rule | decide with the game's network model (ADR-0006 or its replacement) | when a game goes networked |
 
 Typical first problems for a new game from this template:
 
