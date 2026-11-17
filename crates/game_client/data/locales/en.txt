@@ -4,6 +4,7 @@
 menu-title = Game Template
 menu-start = Press Enter or Start to play
 paused = Paused - press Esc or Start to continue
+paused-quit = Q or B: quit to the menu
 save-load-hint = F5 or Y: save | F9 or X: load
 save-done = Saved
 save-failed = Could not save: {reason}

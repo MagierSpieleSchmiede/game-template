@@ -48,20 +48,11 @@ impl Snapshot {
     /// snapshot. Pending intents are dropped; whoever restores supplies the
     /// intents to re-run.
     pub fn restore(&self, world: &mut World) {
-        let entities: Vec<Entity> = world
-            .query_filtered::<Entity, With<SimId>>()
-            .iter(world)
-            .collect();
-        for entity in entities {
-            world.despawn(entity);
-        }
+        clear_simulation(world);
         world.insert_resource(self.tick);
         world.insert_resource(self.rng.clone());
         world.insert_resource(self.ids.clone());
         world.insert_resource(self.control.clone());
-        world.insert_resource(RejectedIntents::default());
-        world.insert_resource(IntentBuffer::default());
-        world.insert_resource(TickIntents::default());
         crate::game::restore(world, &self.game);
     }
 
@@ -80,4 +71,20 @@ impl Snapshot {
         self.game.hash_into(&mut hasher);
         hasher.finish()
     }
+}
+
+/// Despawns every simulation entity (everything with a [`SimId`]) and drops
+/// the per-tick scratch data (pending, frozen and rejected intents): what a
+/// restore or a new run replaces.
+pub(crate) fn clear_simulation(world: &mut World) {
+    let entities: Vec<Entity> = world
+        .query_filtered::<Entity, With<SimId>>()
+        .iter(world)
+        .collect();
+    for entity in entities {
+        world.despawn(entity);
+    }
+    world.insert_resource(RejectedIntents::default());
+    world.insert_resource(IntentBuffer::default());
+    world.insert_resource(TickIntents::default());
 }

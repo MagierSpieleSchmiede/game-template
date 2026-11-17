@@ -15,18 +15,10 @@ use game_sim::control::PlayerId;
 use game_sim::game::Action;
 use game_sim::ids::SimId;
 use game_sim::intent::{Intent, IntentBuffer};
-use game_sim::observation::{Observation, TeamId, Viewer, observe};
+use game_sim::observation::{Observation, observe};
 
 use crate::input::ActionState;
-
-/// The player at this client, and the unit it controls (the example game gives
-/// unit 1 to player 0). A template default: a real game gets both from the
-/// lobby or the server.
-pub const LOCAL_PLAYER: PlayerId = PlayerId(0);
-pub const LOCAL_ACTOR: SimId = SimId(1);
-
-/// The team this client sees for.
-pub const LOCAL_VIEWER: Viewer = Viewer::Team(TeamId(0));
+use crate::run::RunSetup;
 
 /// The observations after the last two ticks, and the state hash after the
 /// last one (for the debug overlay).
@@ -55,6 +47,18 @@ pub fn plugin(app: &mut App) {
         .add_systems(FixedPreUpdate, write_intent)
         .add_systems(FixedPostUpdate, observe_tick)
         .add_systems(Update, (spawn_floor, sync_visuals));
+}
+
+/// The unit `player` steers, as the observation reports it: the first in
+/// `SimId` order if it steers several, none if it steers none (not spawned
+/// yet, or out of the game).
+pub fn local_actor(observation: &Observation, player: PlayerId) -> Option<SimId> {
+    observation
+        .game
+        .units
+        .iter()
+        .find(|u| u.controller == Some(player))
+        .map(|u| u.id)
 }
 
 /// The position to draw: `alpha` of the way from the previous tick's to the
@@ -86,13 +90,25 @@ fn setup_scene(
     });
 }
 
-/// Turns the move axis into this tick's intent. Screen up is away from the
-/// camera, which is −z on the arena floor.
-fn write_intent(actions: Res<ActionState>, mut buffer: ResMut<IntentBuffer>) {
+/// Turns the move axis into this tick's intent for the local player's unit.
+/// Screen up is away from the camera, which is −z on the arena floor.
+pub(crate) fn write_intent(
+    actions: Res<ActionState>,
+    setup: Res<RunSetup>,
+    frames: Res<Frames>,
+    mut buffer: ResMut<IntentBuffer>,
+) {
+    let Some(actor) = frames
+        .current
+        .as_ref()
+        .and_then(|o| local_actor(o, setup.player))
+    else {
+        return;
+    };
     let axis = actions.move_axis();
     buffer.push(Intent {
-        player: LOCAL_PLAYER,
-        actor: LOCAL_ACTOR,
+        player: setup.player,
+        actor,
         action: Action::Move {
             x: axis.x,
             z: -axis.y,
@@ -101,8 +117,9 @@ fn write_intent(actions: Res<ActionState>, mut buffer: ResMut<IntentBuffer>) {
 }
 
 /// Reads the simulation after each tick, through the observation only.
-fn observe_tick(world: &mut World) {
-    let observation = observe(world, LOCAL_VIEWER);
+pub(crate) fn observe_tick(world: &mut World) {
+    let viewer = world.resource::<RunSetup>().viewer;
+    let observation = observe(world, viewer);
     let hash = state_hash(world);
     let mut frames = world.resource_mut::<Frames>();
     frames.previous = frames.current.take();
@@ -143,12 +160,26 @@ fn spawn_floor(
 fn sync_visuals(
     mut commands: Commands,
     frames: Res<Frames>,
+    setup: Res<RunSetup>,
     fixed: Res<Time<Fixed>>,
     assets: Option<Res<Assets3d>>,
-    mut visuals: Query<(Entity, &UnitVisual, &mut Transform)>,
+    mut visuals: Query<(
+        Entity,
+        &UnitVisual,
+        &mut Transform,
+        &mut MeshMaterial3d<StandardMaterial>,
+    )>,
 ) {
     let (Some(current), Some(assets)) = (&frames.current, assets) else {
         return;
+    };
+    let local = local_actor(current, setup.player);
+    let material_for = |id| {
+        if Some(id) == local {
+            assets.local.clone()
+        } else {
+            assets.other.clone()
+        }
     };
     let previous: BTreeMap<SimId, Vec3> = frames
         .previous
@@ -170,22 +201,23 @@ fn sync_visuals(
         })
         .collect();
 
-    for (entity, visual, mut transform) in &mut visuals {
+    for (entity, visual, mut transform, mut material) in &mut visuals {
         match targets.remove(&visual.0) {
-            Some(at) => transform.translation = at,
+            Some(at) => {
+                transform.translation = at;
+                let wanted = material_for(visual.0);
+                if material.0 != wanted {
+                    material.0 = wanted;
+                }
+            }
             None => commands.entity(entity).despawn(),
         }
     }
     for (id, at) in targets {
-        let material = if id == LOCAL_ACTOR {
-            assets.local.clone()
-        } else {
-            assets.other.clone()
-        };
         commands.spawn((
             UnitVisual(id),
             Mesh3d(assets.unit.clone()),
-            MeshMaterial3d(material),
+            MeshMaterial3d(material_for(id)),
             Transform::from_translation(at),
         ));
     }

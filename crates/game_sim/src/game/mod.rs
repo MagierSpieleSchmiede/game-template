@@ -12,7 +12,7 @@
 //! | [`validate`] | intents | whether an action is well-formed; others are rejected before any system sees them |
 //! | [`Setup`] | scenario | what the run spawns at the start |
 //! | [`build`] | `SimPlugin` | adds the game's resources and systems (in `SimSet::Update`) |
-//! | [`spawn`] | `start_run` | spawns the start state; draws randomness and IDs from the core, assigns actors to players in [`Control`] |
+//! | [`spawn`] | `start_run` | spawns the start state into a world without simulation entities (resetting any game resource that changes during a run); draws randomness and IDs from the core, assigns actors to players in [`Control`] |
 //! | [`GameState`], [`capture`], [`restore`] | snapshots | the complete game state as a value, and back; `Serialize` + `Deserialize` |
 //! | [`GameState::hash_into`] | state hash | feeds the state into the hasher in `SimId` order |
 //! | [`GameObservation`], [`observe`] | observation | what a viewer may see, as plain data |
@@ -158,6 +158,8 @@ pub struct UnitView {
     pub position: Vec3,
     /// Remaining health in thousandths.
     pub health: i64,
+    /// The player steering the unit, if any: how a client finds its own.
+    pub controller: Option<PlayerId>,
 }
 
 /// What a viewer sees of the game.
@@ -174,6 +176,7 @@ pub struct GameObservation {
 /// `viewer`, and nowhere else.
 pub fn observe(world: &mut World, viewer: Viewer) -> GameObservation {
     let _ = viewer;
+    let control = world.resource::<Control>().clone();
     let mut units: Vec<UnitView> = world
         .query::<(&SimId, &Unit)>()
         .iter(world)
@@ -181,6 +184,7 @@ pub fn observe(world: &mut World, viewer: Viewer) -> GameObservation {
             id: *id,
             position: unit.position,
             health: unit.health,
+            controller: control.controller(*id),
         })
         .collect();
     units.sort_by_key(|u| u.id);

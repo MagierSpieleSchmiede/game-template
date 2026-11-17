@@ -26,7 +26,7 @@ Inside `game_sim`, the **core** (genre-neutral, kept by every game):
 | `control` | `PlayerId` and `Control`: which player may steer which actor. |
 | `rng` | `SimRng`: the one seeded randomness source (ADR-0004). |
 | `ids` | `SimId` and the `SimIdCounter`: stable IDs (ADR-0008). |
-| `scenario` | The start state of a run, as data; `start_run` seeds the RNG and lets the game spawn. |
+| `scenario` | The start state of a run, as data; `start_run` clears any earlier run, seeds the RNG and lets the game spawn. |
 | `snapshot` | The whole simulation state as a value, and back: save games, rollback, debugging. |
 | `checksum` | The state hash: determinism tests, replay checks, desync detection. |
 | `replay` | Record the intents that arrived each tick; play them back and compare the hash. |
@@ -42,7 +42,8 @@ Inside `game_client`:
 
 | Module | Responsibility | Genre-neutral? |
 | --- | --- | --- |
-| `screens` | Menu → playing ⇄ paused (ADR-0016) | yes |
+| `screens` | Menu → playing ⇄ paused → menu (ADR-0016) | yes |
+| `run` | `RunSetup`: the scenario of the next run, the local player and viewer; starts a run from the menu (ADR-0016) | yes |
 | `input` | Devices → actions; bindings in `data/input/` (ADR-0016) | yes |
 | `localisation`, `kv` | Texts by key from `data/locales/` (ADR-0016) | yes |
 | `overlay` | Tick, state hash, frame rate (ADR-0016) | yes |

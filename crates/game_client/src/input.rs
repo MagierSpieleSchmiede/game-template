@@ -18,6 +18,7 @@ pub enum InputAction {
     MoveRight,
     Confirm,
     Pause,
+    QuitToMenu,
     Save,
     Load,
     ToggleDebug,
@@ -32,6 +33,7 @@ impl InputAction {
             "move-right" => Self::MoveRight,
             "confirm" => Self::Confirm,
             "pause" => Self::Pause,
+            "quit-to-menu" => Self::QuitToMenu,
             "save" => Self::Save,
             "load" => Self::Load,
             "toggle-debug" => Self::ToggleDebug,
@@ -106,6 +108,14 @@ impl ActionState {
         self.just_pressed.contains(&action)
     }
 
+    /// Holds `action` as if it had just been pressed: for tests, which have
+    /// no devices.
+    #[cfg(test)]
+    pub fn press(&mut self, action: InputAction) {
+        self.pressed.insert(action);
+        self.just_pressed.insert(action);
+    }
+
     /// The move direction, x right and y up, length at most 1: the digital
     /// directions and the left stick combined.
     pub fn move_axis(&self) -> Vec2 {
@@ -168,6 +178,7 @@ mod tests {
             InputAction::MoveRight,
             InputAction::Confirm,
             InputAction::Pause,
+            InputAction::QuitToMenu,
             InputAction::Save,
             InputAction::Load,
             InputAction::ToggleDebug,

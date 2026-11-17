@@ -191,12 +191,14 @@ mod tests {
 
     use super::*;
     use crate::presentation::Frames;
+    use crate::run::RunSetup;
     use crate::storage::MemoryStore;
 
     fn app() -> App {
         let mut app = headless_app(Scenario::default());
         app.insert_resource(Storage(Box::new(MemoryStore::default())))
-            .init_resource::<Frames>();
+            .init_resource::<Frames>()
+            .init_resource::<RunSetup>();
         app
     }
 
