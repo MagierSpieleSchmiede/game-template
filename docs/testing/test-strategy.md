@@ -13,7 +13,7 @@ title: "Test strategy — what is tested how, and where the boundaries are"
 | Client saves | Save, advance, load reaches the saved hash; refusals leave the world alone and have a localised notice; stores round-trip and keep slots inside their folder | `crates/game_client/src/{saving,storage}.rs` |
 | Regression | A committed replay still reproduces on every platform | `crates/game_sim/tests/regression.rs` |
 | Headless | The sim runs without window or renderer | [[headless-integration-test\|Headless integration test]] |
-| Performance | Simulation and rendering benchmarks | [[benchmarks\|Benchmarks]] |
+| Performance | Simulation and rendering benchmarks; the headless one also runs a small self-check in `cargo test` | [[benchmarks\|Benchmarks]], `crates/game_sim/examples/bench.rs` |
 | Platforms | CI checks the sim for wasm32, Android, iOS | [[platforms\|Platforms]] |
 | Toolchain | CI checks the workspace with the declared `rust-version` too, and builds `main` after every merge | `.github/workflows/ci.yml` |
 
