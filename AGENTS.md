@@ -61,7 +61,7 @@ cargo test
 - **Core and game stay apart:** the core of `game_sim` (every module except `game/`) and the genre-neutral client modules never name genre concepts (units, health, arenas, vehicles…); they reach the game only through the contract in `crates/game_sim/src/game/mod.rs`.
 - **Scope:** no abstraction that does not serve the "design for" list or is used at least twice. No TODO stubs for core functionality.
 - **`Cargo.lock` is committed.** New dependencies only with justification (an ADR if it is an architecture question).
-- **Branches and `main`:** nobody commits directly to `main`. Everyone works on their own branch `dev-<name>` and creates it themselves; agents work on the branch of the person they work for. Everything reaches `main` via pull request; merge when the maintainer says so.
+- **Branches and `main`:** nobody commits directly to `main`. There is **one branch per person**, named after the person, not the task: `dev-<person>` (e.g. `dev-daniel`). Each person creates theirs once and keeps using it for every task. Agents never create branches of their own: they work and commit on the branch of the person they work for, across all sessions and tasks. Everything reaches `main` via pull request from that branch; merge when the maintainer says so. After a merge, the branch continues from the new `main`.
 - **Never commit:** `target/`, `site/.quartz/`, `site/public/`, `.env`, `.secrets`.
 
 ## Keeping `target/` small

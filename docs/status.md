@@ -8,14 +8,13 @@ title: "Status — handover: what was last done and what comes next"
 
 ## Last done
 
-**T-015, storage backends for Android, iOS and the web (branch `dev-rename-script`, on top of T-014), in progress:**
+**Branches tidied up:** the template work T-009 to T-015 (stranded on `dev-rename-script` after PR #7 went into an already merged branch) is now in `main` via PR #8. AGENTS.md now says **one branch per person** (`dev-<person>`), which agents reuse; the per-task `dev-*` branches are deleted. The maintainer's branch is `dev-daniel`.
 
-- `storage.rs`: Android uses `FileStore` in the app's internal data folder (`bevy::android::ANDROID_APP`), iOS `FileStore` under `$HOME/Library/Application Support/<app>`, the web a new `WebStore` over `localStorage` (base64). New client deps `base64`, and on wasm32 `web-sys`/`wasm-bindgen`; all already in the graph, no new packages in `Cargo.lock`.
-- Web checked in headless Chromium: a save survives a page reload and F9 restores it. Android and iOS not compiled or run (see the task page).
+T-015 is still in progress: web checked in headless Chromium, Android and iOS not yet compiled or run (see the task page).
 
 ## Next task
 
-**Finish T-015 on a device** once a game packages for Android/iOS, or **adapt the template to your game** ([[t-001-adapt-the-template|T-001]]).
+**Finish T-015 on a device** (a session with a phone connected, once a game packages for Android/iOS), or **adapt the template to your game** ([[t-001-adapt-the-template|T-001]]).
 
 - **Read for that:** [[t-015-storage-backends-for-mobile-and-web|T-015]] (what is still open); for T-001: [[decisions|Decisions]] and the default ADRs, [[spec-001-prototype|Spec 001 template]], [[conventions|Conventions]].
 - **Tests first:** keep the determinism test green after every change to the simulation.
