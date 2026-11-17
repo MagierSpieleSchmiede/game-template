@@ -106,27 +106,34 @@ fn run(args: &[String]) -> Result<(), String> {
     }
 
     // The package entries in Cargo.lock are sorted by name, and imports by
-    // crate name: let the tools that own those orders restore them.
+    // crate name: let the tools that own those orders restore them. Each step
+    // lists its attempts; `update --workspace` touches only the workspace's own
+    // entries, so no dependency changes version. It needs the registry index
+    // only when the local copy is missing, hence offline first.
     let cargo = env::var_os("CARGO").unwrap_or_else(|| "cargo".into());
-    let steps: [(&str, &[&str]); 2] = [
+    let steps: [(&str, &[&[&str]]); 2] = [
         (
             "update Cargo.lock",
-            &["metadata", "--format-version", "1", "--offline"],
+            &[
+                &["update", "--workspace", "--offline"],
+                &["update", "--workspace"],
+            ],
         ),
-        ("format the code", &["fmt", "--all"]),
+        ("format the code", &[&["fmt", "--all"]]),
     ];
-    for (what, args) in steps {
-        let ok = Command::new(&cargo)
-            .args(args)
-            .current_dir(&root)
-            .stdout(Stdio::null())
-            .status()
-            .is_ok_and(|s| s.success());
+    for (what, attempts) in steps {
+        let ok = attempts.iter().any(|args| {
+            Command::new(&cargo)
+                .args(*args)
+                .current_dir(&root)
+                .stdout(Stdio::null())
+                .stderr(Stdio::null())
+                .status()
+                .is_ok_and(|s| s.success())
+        });
         if !ok {
-            println!(
-                "warning: could not {what} (cargo {}); run it yourself",
-                args.join(" ")
-            );
+            let last = attempts[attempts.len() - 1].join(" ");
+            println!("warning: could not {what}; run `cargo {last}` yourself");
         }
     }
     println!(
