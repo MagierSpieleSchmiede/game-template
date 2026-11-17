@@ -11,7 +11,7 @@ title: "Status — handover: what was last done and what comes next"
 **T-013, CI web build of the client (branch `dev-rename-script`, on top of T-012):**
 
 - New CI job `web-client` in `.github/workflows/ci.yml`: `cargo build -p game_client --locked --target wasm32-unknown-unknown` (a full build, so linking is checked too; nothing is run or packaged).
-- Locally, `cargo +1.97.1 check -p game_client --target wasm32-unknown-unknown` passed with no code changes and no warnings; the debug build takes over 10 minutes here.
+- Locally, `cargo +1.97.1 check -p game_client --target wasm32-unknown-unknown` and the full `cargo build` passed with no code changes and no warnings (the debug `.wasm` is 1.4 GB with debuginfo; a cold build takes over 10 minutes here).
 - [[platforms|Platforms]] says what the web job proves and what it does not (no wasm-bindgen, no page, saves in memory).
 
 ## Next task
