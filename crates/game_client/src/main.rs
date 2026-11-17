@@ -6,9 +6,10 @@
 //!
 //! | Module | Genre-neutral? |
 //! | --- | --- |
-//! | `screens`, `run`, `input`, `localisation`, `overlay`, `kv`, `saving`, `storage` | yes: keep, extend |
+//! | `screens`, `run`, `input`, `localisation`, `font`, `overlay`, `kv`, `saving`, `storage` | yes: keep, extend |
 //! | `presentation` | no: the example game's look; replace with `game_sim::game` |
 
+mod font;
 mod input;
 mod kv;
 mod localisation;
@@ -26,6 +27,7 @@ use game_sim::SimPlugin;
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
+        .add_plugins(font::plugin)
         .add_plugins(SimPlugin)
         .init_resource::<run::RunSetup>()
         .insert_resource(localisation::Localisation::english())

@@ -64,3 +64,6 @@ be tested without a window and embedded anywhere.
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+The bundled UI font, Noto Sans (`crates/game_client/data/fonts/`), is under the
+SIL Open Font License 1.1 — see [OFL.txt](crates/game_client/data/fonts/OFL.txt).

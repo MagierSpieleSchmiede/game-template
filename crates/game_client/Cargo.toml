@@ -15,3 +15,8 @@ game_sim.workspace = true
 # The client is the one crate that renders: it uses Bevy with default features
 # (window, renderer, winit); the simulation stays free of them (ADR-0005).
 bevy = { version = "0.20.1" }
+
+[dev-dependencies]
+# Test only: checks that the UI font has a glyph for every locale character.
+# Already in the dependency graph through Bevy's text stack (parley), same version.
+skrifa = { version = "0.44.0", default-features = false, features = ["std"] }

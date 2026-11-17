@@ -3035,6 +3035,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "game_sim",
+ "skrifa",
 ]
 
 [[package]]
