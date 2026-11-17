@@ -8,9 +8,10 @@
 //! | Item | Used by | What it is |
 //! | --- | --- | --- |
 //! | [`Action`] | intents | what an actor can want in a tick |
+//! | [`validate`] | intents | whether an action is well-formed; others are rejected before any system sees them |
 //! | [`Setup`] | scenario | what the run spawns at the start |
 //! | [`build`] | `SimPlugin` | adds the game's resources and systems (in `SimSet::Update`) |
-//! | [`spawn`] | `start_run` | spawns the start state; draws randomness and IDs from the core |
+//! | [`spawn`] | `start_run` | spawns the start state; draws randomness and IDs from the core, assigns actors to players in [`Control`] |
 //! | [`GameState`], [`capture`], [`restore`] | snapshots | the complete game state as a value, and back |
 //! | [`GameState::hash_into`] | state hash | feeds the state into the hasher in `SimId` order |
 //! | [`GameObservation`], [`observe`] | observation | what a viewer may see, as plain data |
@@ -29,6 +30,7 @@ use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::checksum::StateHasher;
+use crate::control::{Control, PlayerId};
 use crate::ids::{SimId, SimIdCounter};
 use crate::observation::Viewer;
 use crate::rng::SimRng;
@@ -43,6 +45,16 @@ pub enum Action {
     Move { x: f32, z: f32 },
     /// Stand still.
     Idle,
+}
+
+/// Whether an action is well-formed. Intents come from clients, AIs and
+/// add-ons; anything that would corrupt the state (NaN, infinity, values out
+/// of range) must be refused here, because the game systems trust what passes.
+pub fn validate(action: &Action) -> bool {
+    match *action {
+        Action::Move { x, z } => x.is_finite() && z.is_finite(),
+        Action::Idle => true,
+    }
 }
 
 /// What a run spawns at the start.
@@ -69,12 +81,15 @@ pub fn build(app: &mut App) {
 }
 
 /// Spawns the start state: the units on the spawn circle, directions drawn
-/// from the RNG, IDs assigned in spawn order.
+/// from the RNG, IDs assigned in spawn order. Each unit gets its own player:
+/// unit `n` (its `SimId`) is controlled by `PlayerId(n - 1)`.
 pub fn spawn(world: &mut World, setup: &Setup) {
     let balance = world.resource::<Balance>().clone();
     for _ in 0..setup.unit_count {
         let dir = random_floor_direction(&mut world.resource_mut::<SimRng>());
         let id = world.resource_mut::<SimIdCounter>().allocate();
+        let player = PlayerId(id.0 as u32 - 1);
+        world.resource_mut::<Control>().assign(id, player);
         world.spawn((
             id,
             Unit {

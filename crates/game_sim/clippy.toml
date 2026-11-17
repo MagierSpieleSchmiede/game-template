@@ -1,14 +1,27 @@
 # The simulation draws randomness only from SimRng and never reads a clock
-# (ADR-0004, determinism.md). Everything that would bring in other randomness
-# or time is forbidden here; `cargo clippy -- -D warnings` turns a use into an
-# error.
+# (ADR-0004, determinism.md). Everything that would bring in other randomness,
+# time or an iteration order that depends on hashing is forbidden here;
+# `cargo clippy -- -D warnings` turns a use into an error.
+#
+# `allow-invalid = true` marks crates the simulation does not depend on today
+# (rand, getrandom): the entry takes effect the day someone adds them.
 disallowed-methods = [
     { path = "std::time::Instant::now", reason = "no clock in the simulation; count ticks" },
     { path = "std::time::SystemTime::now", reason = "no clock in the simulation; count ticks" },
     { path = "std::collections::hash_map::RandomState::new", reason = "random seed; use SimRng" },
+    { path = "rand::random", reason = "random seed; use SimRng", allow-invalid = true },
+    { path = "rand::thread_rng", reason = "random seed; use SimRng", allow-invalid = true },
+    { path = "rand::rng", reason = "random seed; use SimRng", allow-invalid = true },
+    { path = "getrandom::getrandom", reason = "random seed; use SimRng", allow-invalid = true },
+    { path = "getrandom::fill", reason = "random seed; use SimRng", allow-invalid = true },
 ]
 disallowed-types = [
     { path = "std::collections::hash_map::RandomState", reason = "random seed; use SimRng" },
-    { path = "std::collections::HashMap", reason = "random iteration order; use BTreeMap" },
-    { path = "std::collections::HashSet", reason = "random iteration order; use BTreeSet" },
+    { path = "std::collections::HashMap", reason = "iteration order depends on hashing; use BTreeMap" },
+    { path = "std::collections::HashSet", reason = "iteration order depends on hashing; use BTreeSet" },
+    { path = "bevy::platform::collections::HashMap", reason = "iteration order depends on insertion history; use BTreeMap" },
+    { path = "bevy::platform::collections::HashSet", reason = "iteration order depends on insertion history; use BTreeSet" },
+    { path = "hashbrown::HashMap", reason = "iteration order depends on hashing; use BTreeMap", allow-invalid = true },
+    { path = "hashbrown::HashSet", reason = "iteration order depends on hashing; use BTreeSet", allow-invalid = true },
+    { path = "rand::rngs::ThreadRng", reason = "random seed; use SimRng", allow-invalid = true },
 ]

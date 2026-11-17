@@ -8,12 +8,14 @@
 use bevy::prelude::*;
 
 use crate::checksum::StateHasher;
+use crate::control::Control;
 use crate::ids::{SimId, SimIdCounter};
-use crate::intent::{IntentBuffer, TickIntents};
+use crate::intent::{IntentBuffer, RejectedIntents, TickIntents};
 use crate::rng::SimRng;
 use crate::tick::SimTick;
 
-/// The complete simulation state between two ticks.
+/// The complete simulation state between two ticks. Per-tick scratch data
+/// (pending, frozen and rejected intents) is not part of it.
 #[derive(Debug, Clone)]
 pub struct Snapshot {
     /// The last simulated tick.
@@ -22,6 +24,8 @@ pub struct Snapshot {
     pub rng: SimRng,
     /// The spawn counter.
     pub ids: SimIdCounter,
+    /// Who controls which actor.
+    pub control: Control,
     /// Everything the game simulates.
     pub game: crate::game::GameState,
 }
@@ -34,6 +38,7 @@ impl Snapshot {
             tick: *world.resource::<SimTick>(),
             rng: world.resource::<SimRng>().clone(),
             ids: world.resource::<SimIdCounter>().clone(),
+            control: world.resource::<Control>().clone(),
             game: crate::game::capture(world),
         }
     }
@@ -53,6 +58,8 @@ impl Snapshot {
         world.insert_resource(self.tick);
         world.insert_resource(self.rng.clone());
         world.insert_resource(self.ids.clone());
+        world.insert_resource(self.control.clone());
+        world.insert_resource(RejectedIntents::default());
         world.insert_resource(IntentBuffer::default());
         world.insert_resource(TickIntents::default());
         crate::game::restore(world, &self.game);
@@ -64,6 +71,10 @@ impl Snapshot {
         hasher.write_u64(self.tick.0);
         hasher.write_u64(self.rng.clone().next_u64());
         hasher.write_i64(self.ids.last());
+        for (actor, player) in self.control.iter() {
+            hasher.write_i64(actor.0);
+            hasher.write_u64(player.0 as u64);
+        }
         self.game.hash_into(&mut hasher);
         hasher.finish()
     }

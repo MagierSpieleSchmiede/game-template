@@ -8,12 +8,12 @@ title: "Status — handover: what was last done and what comes next"
 
 ## Last done
 
-**Template defaults and a genre-neutral core (branch `dev-template-defaults`):**
+**Hardening (branch `dev-hardening`):**
 
-- New ADR status `default` (ADR-0012): genre-dependent decisions ship working code and are decided per game. Defaults: 0006 rollback, 0013 example game, 0014 60 Hz + f32, 0015 Avian, 0016 client shell.
-- `game_sim` split into a core (tick, intents frozen in actor order, scenario, snapshot, state hash, replay, rollback, observation) and `game/`, the example arena game behind a documented contract.
-- Client: menu → playing ⇄ paused, keyboard/gamepad actions with bindings in `data/input/`, localisation in `data/locales/`, units drawn from the observation and interpolated between ticks, debug overlay (F3). Run and checked on a software renderer.
-- Tests for snapshots, replays, rollback, observation, bindings, localisation, interpolation. The determinism hash changed because it now includes the tick and ID counter; the unit states are unchanged.
+- Intents are checked at the start of every tick: the game's `validate` refuses malformed actions (NaN, infinity), and the new `Control` resource (who controls which actor, part of snapshots and the hash) refuses intents from other players. Rejections are listed in `RejectedIntents`. `Intent` now carries `player`.
+- CI: a job checks the workspace with the declared `rust-version` (1.97.1); `main` is built after every merge; Quartz is pinned to a commit in `site/build.sh`.
+- `clippy.toml` also forbids Bevy's and hashbrown's hash maps and sets, `rand` and `getrandom`.
+- The determinism hash changed because it now covers control; the units' states are unchanged.
 
 ## Next task
 

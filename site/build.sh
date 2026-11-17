@@ -6,11 +6,13 @@
 #   site/build.sh --serve    # live preview on http://localhost:8080, rebuilt as you edit
 #
 # Quartz is cloned into site/.quartz/ (gitignored) and moved to QUARTZ_REF on every build.
-# To hold the site at a version, set QUARTZ_REF to a tag or a commit.
+# QUARTZ_REF is pinned to a commit, so a change upstream cannot change or break the site
+# unnoticed. To update: `git ls-remote https://github.com/MathStruct/quartz.git main`, put
+# the new commit here, and check the result on the preview branch first.
 set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONTENT="$HERE/../docs"
-QUARTZ_REF="${QUARTZ_REF:-main}"
+QUARTZ_REF="${QUARTZ_REF:-6c85c0950ac0bd9567d2509dd1d50d38e4e6696c}"
 
 ENGINE="${QUARTZ_DIR:-$HERE/.quartz}"
 if [[ -z "${QUARTZ_DIR:-}" ]]; then

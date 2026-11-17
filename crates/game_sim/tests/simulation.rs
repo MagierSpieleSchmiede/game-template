@@ -3,15 +3,17 @@ use std::time::Duration;
 use bevy::prelude::*;
 use bevy::time::Fixed;
 
+use game_sim::control::PlayerId;
 use game_sim::game::{Action, Balance, Setup, Unit};
 use game_sim::headless::{headless_app, step_ticks};
 use game_sim::ids::SimId;
-use game_sim::intent::{Intent, IntentBuffer};
+use game_sim::intent::{Intent, IntentBuffer, RejectedIntents, Rejection};
 use game_sim::scenario::Scenario;
 use game_sim::tick::SimTick;
 
 fn push(app: &mut App, unit: i64, action: Action) {
     app.world_mut().resource_mut::<IntentBuffer>().push(Intent {
+        player: PlayerId(unit as u32 - 1),
         actor: SimId(unit),
         action,
     });
@@ -102,4 +104,68 @@ fn intents_are_frozen_in_actor_order() {
     let frozen = app.world().resource::<game_sim::intent::TickIntents>();
     let actors: Vec<i64> = frozen.0.iter().map(|i| i.actor.0).collect();
     assert_eq!(actors, vec![1, 2]);
+}
+
+fn push_as(app: &mut App, player: u32, unit: i64, action: Action) {
+    app.world_mut().resource_mut::<IntentBuffer>().push(Intent {
+        player: PlayerId(player),
+        actor: SimId(unit),
+        action,
+    });
+}
+
+/// An action with NaN or infinity is rejected before any system sees it; the
+/// unit keeps its state instead of turning into NaN for the rest of the run.
+#[test]
+fn malformed_actions_are_rejected() {
+    let mut app = headless_app(Scenario::default());
+    let before = unit(&mut app, 1);
+    push(
+        &mut app,
+        1,
+        Action::Move {
+            x: f32::NAN,
+            z: 0.0,
+        },
+    );
+    push(
+        &mut app,
+        2,
+        Action::Move {
+            x: f32::INFINITY,
+            z: 1.0,
+        },
+    );
+    app.update();
+
+    assert_eq!(unit(&mut app, 1).velocity, before.velocity);
+    assert!(unit(&mut app, 2).position.is_finite());
+    let rejected = &app.world().resource::<RejectedIntents>().0;
+    assert_eq!(rejected.len(), 2);
+    assert!(
+        rejected
+            .iter()
+            .all(|(_, why)| *why == Rejection::InvalidAction)
+    );
+}
+
+/// A player can only steer the actors it controls.
+#[test]
+fn intents_for_actors_of_other_players_are_rejected() {
+    let mut app = headless_app(Scenario::default());
+    let start = unit(&mut app, 2).position;
+    // Player 0 controls unit 1, not unit 2.
+    push_as(&mut app, 0, 2, Action::Move { x: 1.0, z: 0.0 });
+    step_ticks(&mut app, 10);
+
+    assert_eq!(unit(&mut app, 2).position, start);
+    let rejected = &app.world().resource::<RejectedIntents>().0;
+    // The rejection list holds only the latest tick; the intent came at tick 1.
+    assert!(rejected.is_empty());
+
+    push_as(&mut app, 0, 2, Action::Move { x: 1.0, z: 0.0 });
+    app.update();
+    let rejected = &app.world().resource::<RejectedIntents>().0;
+    assert_eq!(rejected.len(), 1);
+    assert_eq!(rejected[0].1, Rejection::NotInControl);
 }

@@ -1,4 +1,5 @@
 use game_sim::checksum::state_hash;
+use game_sim::control::PlayerId;
 use game_sim::game::{Action, Setup};
 use game_sim::headless::headless_app;
 use game_sim::ids::SimId;
@@ -16,6 +17,7 @@ fn scenario() -> Scenario {
 
 fn late_intent() -> Intent {
     Intent {
+        player: PlayerId(1),
         actor: SimId(2),
         action: Action::Move { x: 0.0, z: 1.0 },
     }
@@ -23,6 +25,7 @@ fn late_intent() -> Intent {
 
 fn on_time(tick: u64) -> Vec<Intent> {
     let mut intents = vec![Intent {
+        player: PlayerId(0),
         actor: SimId(1),
         action: Action::Move { x: 1.0, z: 0.0 },
     }];
