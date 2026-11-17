@@ -1,0 +1,10 @@
+[package]
+name = "rename_crates"
+description = "Renames the template's crates game_sim and game_client for a new game"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+# No dependencies: the tool must run wherever cargo runs, before anything else is set up.

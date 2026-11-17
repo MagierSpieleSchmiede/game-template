@@ -1,0 +1,4 @@
+# `cargo rename-crates <sim> <client>` renames the template's crates for a new game
+# (tools/rename_crates).
+[alias]
+rename-crates = "run --quiet --package rename_crates --"
