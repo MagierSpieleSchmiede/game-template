@@ -9,7 +9,9 @@ Targets: **Windows, Linux, macOS, Android, iOS** (tier 1: full gates), **Web (wa
 | --- | --- | --- |
 | 1 | Windows, Linux, macOS | `cargo fmt`, `cargo clippy --all-targets`, `cargo test` |
 | 2 | Android, iOS | `cargo check -p game_sim` for the target |
-| 3 | Web (wasm32) | `cargo check -p game_sim --target wasm32-unknown-unknown` |
+| 3 | Web (wasm32) | `cargo check -p game_sim --target wasm32-unknown-unknown`; `cargo build -p game_client --target wasm32-unknown-unknown` |
+
+The web build of the client only proves that it compiles and links for `wasm32-unknown-unknown` (a full build, because only linking finds a dependency without a wasm32 implementation). Nothing runs it: no `wasm-bindgen` step, no page, no browser test; saves stay in memory there ([[t-015-storage-backends-for-mobile-and-web|T-015]]). Shipping to the web is a per-game task.
 
 Rules:
 

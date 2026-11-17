@@ -3,7 +3,7 @@ name: CI
 # The gates from AGENTS.md on every platform:
 #   tier 1  Linux, Windows, macOS   fmt, clippy, test
 #   tier 2  Android, iOS            cargo check of the simulation
-#   tier 3  Web (wasm32)            cargo check of the simulation
+#   tier 3  Web (wasm32)            cargo check of the simulation, cargo build of the client
 #   msrv    Linux                   cargo check of everything with the declared rust-version
 # Changes that only touch the vault or the site are left to deploy.yml.
 # main is built on push too: two pull requests that pass on their own can still break each
@@ -98,3 +98,18 @@ jobs:
         with:
           key: ${{ matrix.target }}
       - run: cargo check -p game_sim --locked --target ${{ matrix.target }} ${{ matrix.features }}
+
+  # The client must stay buildable for the web. A full build, not a check: only linking finds
+  # a dependency that has no wasm32 implementation of something it imports. Nothing is run or
+  # packaged here (no wasm-bindgen, no page); see docs/architecture/platforms.md.
+  web-client:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: web-client
+      - run: cargo build -p game_client --locked --target wasm32-unknown-unknown
