@@ -6,13 +6,14 @@ title: "Intent & controls — the one thing the presentation writes back"
 The presentation never touches simulation state. It produces an **intent**: plain, serialisable data (`serde`), no Bevy types, no entity handles (ADR-0002). That is what makes intents usable by a player, an AI, an add-on, a replay, and the network alike.
 
 ```rust
-struct Intent { actor: SimId, action: Action }      // core: game_sim::intent
+struct Intent { player: PlayerId, actor: SimId, action: Action }   // core: game_sim::intent
 enum Action { Move { x: f32, z: f32 }, Idle }      // the game's: game_sim::game (example, ADR-0013)
 ```
 
 Rules:
 
-- Intents are queued in the `IntentBuffer`. At the start of each tick (`SimSet::Input`) they are frozen into `TickIntents`, **sorted by actor** (arrival order kept per actor): arrival order differs between machines, `SimId` order does not. Game systems read `TickIntents` only.
+- Intents are queued in the `IntentBuffer`. At the start of each tick (`SimSet::Input`) they are checked and frozen into `TickIntents`, **sorted by actor** (arrival order kept per actor): arrival order differs between machines, `SimId` order does not. Game systems read `TickIntents` only.
+- **Checked before any game system sees them:** the game's `validate` must accept the action, and the `Control` resource must say the sending player controls the actor. Everything else lands in `RejectedIntents` with its reason ([[security|Security]]). The game assigns control when it spawns actors and changes it when they change hands.
 - In the client, the input layer (ADR-0016) turns devices into actions; the presentation turns actions into intents, once per tick, in `FixedPreUpdate`.
 - Input is mapped through **actions**, never raw key codes; keyboard/mouse and gamepad are equal.
 - Extend `Action` with the game's abilities; once variants travel the network, they are stable (see [[serialization-and-ids|Serialization & IDs]]).

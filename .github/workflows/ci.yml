@@ -4,13 +4,14 @@ name: CI
 #   tier 1  Linux, Windows, macOS   fmt, clippy, test
 #   tier 2  Android, iOS            cargo check of the simulation
 #   tier 3  Web (wasm32)            cargo check of the simulation
+#   msrv    Linux                   cargo check of everything with the declared rust-version
 # Changes that only touch the vault or the site are left to deploy.yml.
-# main is not built on push: everything reaching it was already built on a dev-* branch or
-# in its pull request, so a fast-forward merge would only repeat the same run.
+# main is built on push too: two pull requests that pass on their own can still break each
+# other once both are merged.
 
 on:
   push:
-    branches: ["dev-*"]
+    branches: ["main", "dev-*"]
     paths-ignore: ["docs/**", "site/**", "**.md"]
   pull_request:
     paths-ignore: ["docs/**", "site/**", "**.md"]
@@ -52,6 +53,23 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: cargo clippy --all-targets --locked -- -D warnings
       - run: cargo test --locked
+
+  # The workspace must build with the oldest Rust it claims to support (rust-version in
+  # Cargo.toml); the other jobs use the newest stable. Keep the toolchain below in step with
+  # rust-version.
+  msrv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Linux system libraries
+        run: sudo apt-get update -q && sudo apt-get install -y -q libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.97.1"
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: msrv
+      - run: cargo check --workspace --all-targets --locked
 
   # The simulation must build for every platform (docs/architecture/platforms.md).
   # iOS runs on macOS because a build script of bevy_log's iOS backend compiles C with the

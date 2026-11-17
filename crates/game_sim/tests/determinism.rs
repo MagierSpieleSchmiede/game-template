@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 use game_sim::checksum::state_hash;
+use game_sim::control::PlayerId;
 use game_sim::game::{Action, Setup, Unit};
 use game_sim::headless::{headless_app, step_ticks};
 use game_sim::ids::SimId;
@@ -29,6 +30,7 @@ pub fn scripted_run(seed: u64) -> App {
                 (_, a) => a,
             };
             buffer.push(Intent {
+                player: PlayerId(unit as u32 - 1),
                 actor: SimId(unit),
                 action,
             });
@@ -80,7 +82,7 @@ fn same_scenario_same_end_state() {
 fn scripted_run_matches_committed_hash() {
     let hash = state_hash(scripted_run(42).world_mut());
     assert_eq!(
-        hash, 0x04ea_21ca_6db7_cc82,
+        hash, 0x57d5_78ba_8574_023e,
         "state hash changed: {hash:#018x}"
     );
 }

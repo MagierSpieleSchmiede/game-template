@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 use game_sim::checksum::state_hash;
+use game_sim::control::PlayerId;
 use game_sim::game::{Action, Setup};
 use game_sim::headless::{headless_app, step_ticks};
 use game_sim::ids::SimId;
@@ -22,6 +23,7 @@ fn push_moves(app: &mut App) {
     let mut buffer = app.world_mut().resource_mut::<IntentBuffer>();
     for (actor, x) in [(1, 1.0), (2, -1.0), (3, 0.5)] {
         buffer.push(Intent {
+            player: PlayerId(actor as u32 - 1),
             actor: SimId(actor),
             action: Action::Move { x, z: 0.3 },
         });

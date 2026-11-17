@@ -1,3 +1,4 @@
+use game_sim::control::PlayerId;
 use game_sim::game::{Action, Setup};
 use game_sim::headless::{headless_app, step_ticks};
 use game_sim::ids::SimId;
@@ -15,6 +16,7 @@ fn replay_reproduces_the_run() {
     start_recording(&mut app);
     for round in 0..4 {
         app.world_mut().resource_mut::<IntentBuffer>().push(Intent {
+            player: PlayerId((1 + round % 3) as u32 - 1),
             actor: SimId(1 + round % 3),
             action: Action::Move { x: 0.7, z: -0.7 },
         });

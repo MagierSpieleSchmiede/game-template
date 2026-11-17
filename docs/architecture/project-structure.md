@@ -22,7 +22,8 @@ Inside `game_sim`, the **core** (genre-neutral, kept by every game):
 | --- | --- |
 | `schedule` | The core `SimSet`s: `Input → Update → End`. |
 | `tick` | `SimTick`: the number of the last simulated tick. |
-| `intent` | `Intent`, the `IntentBuffer`, the frozen `TickIntents`: the input of a tick. |
+| `intent` | `Intent`, the `IntentBuffer`, the checked and frozen `TickIntents`, the `RejectedIntents`: the input of a tick. |
+| `control` | `PlayerId` and `Control`: which player may steer which actor. |
 | `rng` | `SimRng`: the one seeded randomness source (ADR-0004). |
 | `ids` | `SimId` and the `SimIdCounter`: stable IDs (ADR-0008). |
 | `scenario` | The start state of a run, as data; `start_run` seeds the RNG and lets the game spawn. |
@@ -33,7 +34,7 @@ Inside `game_sim`, the **core** (genre-neutral, kept by every game):
 | `observation` | The one read path for presentation, AI and network (ADR-0007). |
 | `headless` | The app driver for tests, benchmarks, server and RL. |
 
-And the **game** (`game/`), a template default (ADR-0013) that every game replaces. Its `mod.rs` documents the contract the core relies on: `Action`, `Setup`, `build`, `spawn`, `GameState` with `capture`/`restore`/`hash_into`, `GameObservation` with `observe`. The example's units, balance (ADR-0010) and systems live there.
+And the **game** (`game/`), a template default (ADR-0013) that every game replaces. Its `mod.rs` documents the contract the core relies on: `Action`, `validate`, `Setup`, `build`, `spawn`, `GameState` with `capture`/`restore`/`hash_into`, `GameObservation` with `observe`. The example's units, balance (ADR-0010) and systems live there.
 
 Inside `game_client`:
 

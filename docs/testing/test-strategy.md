@@ -12,6 +12,7 @@ title: "Test strategy — what is tested how, and where the boundaries are"
 | Headless | The sim runs without window or renderer | [[headless-integration-test\|Headless integration test]] |
 | Performance | Simulation and rendering benchmarks | [[benchmarks\|Benchmarks]] |
 | Platforms | CI checks the sim for wasm32, Android, iOS | [[platforms\|Platforms]] |
+| Toolchain | CI checks the workspace with the declared `rust-version` too, and builds `main` after every merge | `.github/workflows/ci.yml` |
 
 Principles:
 

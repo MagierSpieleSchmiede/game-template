@@ -11,6 +11,7 @@ use std::collections::BTreeMap;
 use bevy::prelude::*;
 
 use game_sim::checksum::state_hash;
+use game_sim::control::PlayerId;
 use game_sim::game::Action;
 use game_sim::ids::SimId;
 use game_sim::intent::{Intent, IntentBuffer};
@@ -18,8 +19,10 @@ use game_sim::observation::{Observation, TeamId, Viewer, observe};
 
 use crate::input::ActionState;
 
-/// The unit this client controls. A template default: a real game gets it
-/// from the lobby or the server.
+/// The player at this client, and the unit it controls (the example game gives
+/// unit 1 to player 0). A template default: a real game gets both from the
+/// lobby or the server.
+pub const LOCAL_PLAYER: PlayerId = PlayerId(0);
 pub const LOCAL_ACTOR: SimId = SimId(1);
 
 /// The team this client sees for.
@@ -88,6 +91,7 @@ fn setup_scene(
 fn write_intent(actions: Res<ActionState>, mut buffer: ResMut<IntentBuffer>) {
     let axis = actions.move_axis();
     buffer.push(Intent {
+        player: LOCAL_PLAYER,
         actor: LOCAL_ACTOR,
         action: Action::Move {
             x: axis.x,

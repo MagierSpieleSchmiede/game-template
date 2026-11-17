@@ -3,7 +3,8 @@
 //! Two layers:
 //!
 //! - **The core** (every module except `game`): tick counting, stable IDs,
-//!   the seeded RNG, intents, scenarios, snapshots, state hashing, replays,
+//!   the seeded RNG, intents and who may send them, scenarios, snapshots,
+//!   state hashing, replays,
 //!   rollback and the observation. It knows nothing about any genre.
 //! - **The game** (`game`): the gameplay itself. The template ships a small
 //!   example (units moving in an arena) as a *template default* (ADR-0013);
@@ -15,6 +16,7 @@
 //! `docs/architecture/simulation-model.md`.
 
 pub mod checksum;
+pub mod control;
 pub mod game;
 pub mod headless;
 pub mod ids;
@@ -56,6 +58,8 @@ impl Plugin for SimPlugin {
             .init_resource::<tick::SimTick>()
             .init_resource::<intent::IntentBuffer>()
             .init_resource::<intent::TickIntents>()
+            .init_resource::<intent::RejectedIntents>()
+            .init_resource::<control::Control>()
             .insert_resource(Time::<Fixed>::from_hz(TICKS_PER_SECOND as f64))
             .configure_sets(FixedUpdate, schedule::sim_sets())
             .add_systems(Startup, scenario::start_run)
