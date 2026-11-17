@@ -76,6 +76,7 @@ fn spawn_menu(mut commands: Commands, texts: Res<Localisation>) {
                 TextFont::from_font_size(48.0)
             ),
             Text::new(texts.text("menu-start", &[])),
+            Text::new(texts.text("save-load-hint", &[])),
         ],
     ));
 }
@@ -84,6 +85,9 @@ fn spawn_paused(mut commands: Commands, texts: Res<Localisation>) {
     commands.spawn((
         DespawnOnExit(Screen::Paused),
         centred_column(),
-        children![Text::new(texts.text("paused", &[]))],
+        children![
+            Text::new(texts.text("paused", &[])),
+            Text::new(texts.text("save-load-hint", &[])),
+        ],
     ));
 }
