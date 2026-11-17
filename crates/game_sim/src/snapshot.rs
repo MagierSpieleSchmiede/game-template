@@ -16,7 +16,7 @@ use crate::tick::SimTick;
 
 /// The complete simulation state between two ticks. Per-tick scratch data
 /// (pending, frozen and rejected intents) is not part of it.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct Snapshot {
     /// The last simulated tick.
     pub tick: SimTick,
@@ -69,7 +69,9 @@ impl Snapshot {
     pub fn hash(&self) -> u64 {
         let mut hasher = StateHasher::default();
         hasher.write_u64(self.tick.0);
-        hasher.write_u64(self.rng.clone().next_u64());
+        for word in self.rng.state() {
+            hasher.write_u64(word);
+        }
         hasher.write_i64(self.ids.last());
         for (actor, player) in self.control.iter() {
             hasher.write_i64(actor.0);

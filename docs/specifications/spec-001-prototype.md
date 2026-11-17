@@ -25,7 +25,7 @@ A playable prototype that proves the architecture: units in an arena, movement, 
 
 In scope: tick chain, intents, one arena, units, movement, one ability, health, a win condition, minimal presentation (camera, HUD), localisation-ready text.
 
-Out of scope (see [[extension-points|Extension points]]): network transport, AI/RL, add-ons, audio, save files, animation from asset files. Already in the template: menu/pause screens, input actions, localisation, snapshots, replays, headless rollback.
+Out of scope (see [[extension-points|Extension points]]): network transport, AI/RL, add-ons, audio, animation from asset files. Already in the template: menu/pause screens, input actions, localisation, snapshots, save and replay files, headless rollback.
 
 ## Requirements
 

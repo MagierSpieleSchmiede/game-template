@@ -13,6 +13,7 @@ license.workspace = true
 avian3d = { workspace = true, features = ["3d", "parry-f32"] }
 bevy = { workspace = true, features = ["std"] }
 serde = { workspace = true }
+postcard = { workspace = true }
 
 # Bevy always links android-activity on Android, which only compiles once the app picks
 # an implementation; the client does that through bevy_winit, which the simulation must

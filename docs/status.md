@@ -8,12 +8,12 @@ title: "Status — handover: what was last done and what comes next"
 
 ## Last done
 
-**Hardening (branch `dev-hardening`):**
+**Save and replay files (branch `dev-save-files`):**
 
-- Intents are checked at the start of every tick: the game's `validate` refuses malformed actions (NaN, infinity), and the new `Control` resource (who controls which actor, part of snapshots and the hash) refuses intents from other players. Rejections are listed in `RejectedIntents`. `Intent` now carries `player`.
-- CI: a job checks the workspace with the declared `rust-version` (1.97.1); `main` is built after every merge; Quartz is pinned to a commit in `site/build.sh`.
-- `clippy.toml` also forbids Bevy's and hashbrown's hash maps and sets, `rand` and `getrandom`.
-- The determinism hash changed because it now covers control; the units' states are unchanged.
+- ADR-0017 (template default): postcard behind a header with magic, format version, file kind and `game::SIM_VERSION`. `game_sim::file` refuses foreign, outdated, wrong-kind, damaged and padded files; `SaveGame` also checks its state hash. The simulation only produces bytes.
+- Replays record intents as they arrived, so playback re-runs validation and control.
+- A committed regression replay (`crates/game_sim/tests/data/regression.replay`) is played back by CI on every platform. On a deliberate behaviour change: bump `SIM_VERSION`, then `cargo test -p game_sim --test regression -- --ignored record_regression_replay`.
+- Fixed: the state hash covered only the RNG's next output (one of four state words); it now covers all four. The determinism hash changed; unit states are unchanged.
 
 ## Next task
 
@@ -29,3 +29,4 @@ title: "Status — handover: what was last done and what comes next"
 - Replacing the example game means rewriting `game_sim/src/game/` and `game_client/src/presentation.rs`; the contract is in `game/mod.rs`. The core must not name genre concepts.
 - The simulation must keep building for `wasm32-unknown-unknown`; check `docs/architecture/platforms.md` before adding dependencies.
 - Bevy's built-in font covers ASCII only; add a font asset before non-ASCII texts.
+- The client does not save or load yet: it needs a storage place per platform (file, app data folder, browser storage).

@@ -1,11 +1,14 @@
-//! Replays: a run is fully described by its scenario and the intents of each
-//! tick. Recording them gives replays, spectating after the fact, bug reports
+//! Replays: a run is fully described by its scenario and the intents that
+//! arrived in each tick. They are recorded as they arrived, before the checks,
+//! so playback runs the checks again: a change to validation or control shows
+//! up as a different result, like any other change. Recording them gives replays, spectating after the fact, bug reports
 //! that reproduce, and regression tests (play an old replay, compare hashes).
 
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::checksum::state_hash;
+use crate::file::{self, FileError, FileKind};
 use crate::headless::headless_app;
 use crate::intent::{IntentBuffer, TickIntents};
 use crate::scenario::Scenario;
@@ -15,10 +18,24 @@ use crate::scenario::Scenario;
 pub struct Replay {
     /// The start state.
     pub scenario: Scenario,
-    /// The frozen intents of every tick, tick 1 first.
+    /// The intents that arrived for every tick, tick 1 first, in arrival
+    /// order and unchecked.
     pub ticks: Vec<TickIntents>,
     /// The state hash after the last tick: playback must reach it.
     pub final_hash: u64,
+}
+
+impl Replay {
+    /// The replay as file bytes (ADR-0017).
+    pub fn to_bytes(&self) -> Vec<u8> {
+        file::encode(FileKind::Replay, self)
+    }
+
+    /// Reads a replay, refusing other files and replays recorded with
+    /// another simulation version.
+    pub fn from_bytes(bytes: &[u8]) -> Result<Self, FileError> {
+        file::decode(FileKind::Replay, bytes)
+    }
 }
 
 /// The recording in progress. Insert it to start recording; without it,
@@ -26,10 +43,11 @@ pub struct Replay {
 #[derive(Debug, Clone, Default, Resource)]
 pub struct ReplayLog(pub Vec<TickIntents>);
 
-/// Appends this tick's intents to the [`ReplayLog`], if one is recording.
-pub fn record_tick(log: Option<ResMut<ReplayLog>>, intents: Res<TickIntents>) {
+/// Appends the intents that arrived for this tick to the [`ReplayLog`], if
+/// one is recording. Runs before they are checked and frozen.
+pub fn record_tick(log: Option<ResMut<ReplayLog>>, buffer: Res<IntentBuffer>) {
     if let Some(mut log) = log {
-        log.0.push(intents.clone());
+        log.0.push(TickIntents(buffer.intents.clone()));
     }
 }
 

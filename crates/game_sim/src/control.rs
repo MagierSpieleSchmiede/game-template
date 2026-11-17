@@ -20,7 +20,7 @@ use crate::ids::SimId;
 pub struct PlayerId(pub u32);
 
 /// Which player controls which actor.
-#[derive(Debug, Clone, Default, PartialEq, Resource)]
+#[derive(Debug, Clone, Default, PartialEq, Resource, Serialize, Deserialize)]
 pub struct Control(BTreeMap<SimId, PlayerId>);
 
 impl Control {

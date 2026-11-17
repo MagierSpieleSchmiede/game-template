@@ -9,6 +9,8 @@ title: "Test strategy — what is tested how, and where the boundaries are"
 | Integration | Whole ticks against a headless app | `crates/game_sim/tests/` |
 | Determinism | Same scenario → same end state | [[determinism-test\|Determinism test]] |
 | Snapshots, replays, rollback | Restore + re-run, playback, late intents all reach the same state hash | `crates/game_sim/tests/{snapshot,replay,rollback}.rs` |
+| Files | Saves continue runs exactly; damaged, edited, foreign and outdated files are refused | `crates/game_sim/tests/files.rs`, `src/file.rs` |
+| Regression | A committed replay still reproduces on every platform | `crates/game_sim/tests/regression.rs` |
 | Headless | The sim runs without window or renderer | [[headless-integration-test\|Headless integration test]] |
 | Performance | Simulation and rendering benchmarks | [[benchmarks\|Benchmarks]] |
 | Platforms | CI checks the sim for wasm32, Android, iOS | [[platforms\|Platforms]] |

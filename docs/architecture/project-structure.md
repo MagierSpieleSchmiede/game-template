@@ -29,12 +29,14 @@ Inside `game_sim`, the **core** (genre-neutral, kept by every game):
 | `scenario` | The start state of a run, as data; `start_run` seeds the RNG and lets the game spawn. |
 | `snapshot` | The whole simulation state as a value, and back: save games, rollback, debugging. |
 | `checksum` | The state hash: determinism tests, replay checks, desync detection. |
-| `replay` | Record a run's intents; play them back and compare the hash. |
+| `replay` | Record the intents that arrived each tick; play them back and compare the hash. |
+| `save` | `SaveGame`: scenario + snapshot + state hash, to continue a run exactly. |
+| `file` | Save and replay files: postcard behind a versioned header (template default, ADR-0017). |
 | `rollback` | Re-simulate when an intent arrives late (template default, ADR-0006). |
 | `observation` | The one read path for presentation, AI and network (ADR-0007). |
 | `headless` | The app driver for tests, benchmarks, server and RL. |
 
-And the **game** (`game/`), a template default (ADR-0013) that every game replaces. Its `mod.rs` documents the contract the core relies on: `Action`, `validate`, `Setup`, `build`, `spawn`, `GameState` with `capture`/`restore`/`hash_into`, `GameObservation` with `observe`. The example's units, balance (ADR-0010) and systems live there.
+And the **game** (`game/`), a template default (ADR-0013) that every game replaces. Its `mod.rs` documents the contract the core relies on: `SIM_VERSION`, `Action`, `validate`, `Setup`, `build`, `spawn`, `GameState` with `capture`/`restore`/`hash_into`, `GameObservation` with `observe`. The example's units, balance (ADR-0010) and systems live there.
 
 Inside `game_client`:
 

@@ -16,6 +16,6 @@ What it takes:
 - **One tick rate:** `SimPlugin` sets the fixed timestep to `TICKS_PER_SECOND` (Bevy's default is 64 Hz; the value 60 is a template default, ADR-0014); systems use `TICK_SECONDS`, never `Time`.
 - **One seeding point:** `scenario::start_run` seeds `SimRng` from the scenario before the game spawns, for the client and the headless app alike; IDs come from the `SimIdCounter` resource.
 - **Intents in actor order:** `TickIntents` is sorted by `SimId`, not by arrival.
-- **Complete snapshots:** everything that changes during a run is captured by `Snapshot` (tick, RNG, ID counter, who controls which actor, the game's state); `tests/snapshot.rs` proves it by re-running from a restored snapshot.
+- **Complete snapshots:** everything that changes during a run is captured by `Snapshot` (tick, RNG, ID counter, who controls which actor, the game's state), and the state hash covers all of it, including all four words of the RNG state; `tests/snapshot.rs` proves it by re-running from a restored snapshot.
 
-How it is tested: [[determinism-test|Determinism test]]. What it enables: [[network|Network]].
+How it is tested: [[determinism-test|Determinism test]], and a committed regression replay that every CI platform plays back. What it enables: [[network|Network]].

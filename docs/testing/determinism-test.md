@@ -21,4 +21,5 @@ Rules:
 - The test must stay green under **every** change to the simulation; a red determinism test blocks the commit, no exceptions.
 - Extend it as the state grows: every field that desyncs PvP belongs in the comparison.
 - Extend `state_hash` as the state grows, in the same way.
+- **The regression replay** (`crates/game_sim/tests/regression.rs`) is the same idea as a file: a recorded run in `tests/data/regression.replay`, played back on every CI platform. It also covers the file format and the intent checks (the run contains rejected intents). On a deliberate behaviour change, bump `game::SIM_VERSION` and re-record: `cargo test -p game_sim --test regression -- --ignored record_regression_replay`.
 - The committed hash covers the desktop CI runners only (x86-64 and ARM64 macOS); mobile and wasm are only built, not run. Full cross-platform floating-point determinism stays an open question (see the [[problem-log|Problem log]]).

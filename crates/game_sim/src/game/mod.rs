@@ -7,12 +7,13 @@
 //!
 //! | Item | Used by | What it is |
 //! | --- | --- | --- |
+//! | [`SIM_VERSION`] | save and replay files | the version of the simulation's behaviour |
 //! | [`Action`] | intents | what an actor can want in a tick |
 //! | [`validate`] | intents | whether an action is well-formed; others are rejected before any system sees them |
 //! | [`Setup`] | scenario | what the run spawns at the start |
 //! | [`build`] | `SimPlugin` | adds the game's resources and systems (in `SimSet::Update`) |
 //! | [`spawn`] | `start_run` | spawns the start state; draws randomness and IDs from the core, assigns actors to players in [`Control`] |
-//! | [`GameState`], [`capture`], [`restore`] | snapshots | the complete game state as a value, and back |
+//! | [`GameState`], [`capture`], [`restore`] | snapshots | the complete game state as a value, and back; `Serialize` + `Deserialize` |
 //! | [`GameState::hash_into`] | state hash | feeds the state into the hasher in `SimId` order |
 //! | [`GameObservation`], [`observe`] | observation | what a viewer may see, as plain data |
 //!
@@ -35,6 +36,12 @@ use crate::ids::{SimId, SimIdCounter};
 use crate::observation::Viewer;
 use crate::rng::SimRng;
 use crate::schedule::SimSet;
+
+/// The version of the simulation's behaviour. A replay or save only
+/// reproduces its run on the same behaviour, so files record this and refuse
+/// to load on any other. Bump it whenever a change alters what a run produces
+/// (the committed regression replay fails until you do); see ADR-0017.
+pub const SIM_VERSION: u32 = 1;
 
 /// The kinds of things an actor can want in a tick. Keep variants stable once
 /// they travel over the network (see `docs/architecture/serialization-and-ids.md`).
@@ -101,8 +108,9 @@ pub fn spawn(world: &mut World, setup: &Setup) {
     }
 }
 
-/// The complete game state: every unit, in `SimId` order.
-#[derive(Debug, Clone, PartialEq)]
+/// The complete game state: every unit, in `SimId` order. Serialisable, so it
+/// can be saved (ADR-0017).
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct GameState {
     units: Vec<(SimId, Unit)>,
 }
