@@ -16,7 +16,17 @@ game_sim.workspace = true
 # (window, renderer, winit); the simulation stays free of them (ADR-0005).
 bevy = { version = "0.20.1" }
 
+# The browser's localStorage (storage.rs), saves as base64 text. All three already in the
+# graph (base64 through bevy_gltf with the same features, the others through bevy_winit);
+# web-sys only gains the `Storage` binding. base64 is pure Rust and builds for every target.
+[target.'cfg(all(target_arch = "wasm32", target_os = "unknown"))'.dependencies]
+base64 = { version = "0.23.1", default-features = false, features = ["std"] }
+web-sys = { version = "0.3.107", features = ["Window", "Storage"] }
+wasm-bindgen = "0.2.130"
+
 [dev-dependencies]
 # Test only: checks that the UI font has a glyph for every locale character.
 # Already in the dependency graph through Bevy's text stack (parley), same version.
 skrifa = { version = "0.44.0", default-features = false, features = ["std"] }
+# Test only: the web store's text encoding is tested on every platform (storage.rs).
+base64 = { version = "0.23.1", default-features = false, features = ["std"] }

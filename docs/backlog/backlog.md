@@ -29,6 +29,6 @@ The flow per task:
 | [[t-012-non-ascii-font\|T-012]] | A font asset for texts beyond ASCII | template | — | done |
 | [[t-013-ci-web-build-of-the-client\|T-013]] | CI: build the client for the web | template | — | done |
 | [[t-014-overlay-hash-only-when-visible\|T-014]] | Debug overlay: compute the state hash only while visible | template | — | done |
-| [[t-015-storage-backends-for-mobile-and-web\|T-015]] | Client storage backends for Android, iOS and the web | template | T-008 | open |
+| [[t-015-storage-backends-for-mobile-and-web\|T-015]] | Client storage backends for Android, iOS and the web | template | T-008 | in progress |
 
 Status is `open`, `in progress` or `done`. Done tasks stay in the table until the milestone closes; then their rows move to the milestone's implementation log and their pages are deleted.

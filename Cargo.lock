@@ -3033,9 +3033,12 @@ dependencies = [
 name = "game_client"
 version = "0.1.0"
 dependencies = [
+ "base64",
  "bevy",
  "game_sim",
  "skrifa",
+ "wasm-bindgen",
+ "web-sys",
 ]
 
 [[package]]

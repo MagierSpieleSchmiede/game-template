@@ -8,21 +8,21 @@ title: "Status — handover: what was last done and what comes next"
 
 ## Last done
 
-**T-014, overlay hash only while visible (branch `dev-rename-script`, on top of T-013):**
+**T-015, storage backends for Android, iOS and the web (branch `dev-rename-script`, on top of T-014), in progress:**
 
-- `Frames.hash` is now `Option<u64>`, computed after a tick only while `Frames.hash_wanted` is set (`presentation::refresh_hash`). The overlay's `toggle` (now an exclusive system) sets the flag and computes the hash at once, so it also shows while paused.
-- New test `the_state_hash_is_computed_only_while_the_overlay_is_visible` (`overlay.rs`); the save/load and run tests set `hash_wanted` to check the overlay follows the restored state.
-- ADR-0016 and [[benchmarks|Benchmarks]] say the hash runs only while the overlay is visible.
+- `storage.rs`: Android uses `FileStore` in the app's internal data folder (`bevy::android::ANDROID_APP`), iOS `FileStore` under `$HOME/Library/Application Support/<app>`, the web a new `WebStore` over `localStorage` (base64). New client deps `base64`, and on wasm32 `web-sys`/`wasm-bindgen`; all already in the graph, no new packages in `Cargo.lock`.
+- Web checked in headless Chromium: a save survives a page reload and F9 restores it. Android and iOS not compiled or run (see the task page).
 
 ## Next task
 
-**Adapt the template to your game** ([[t-001-adapt-the-template|T-001]]), or the next `template` task in the [[backlog|Backlog]] ([[t-015-storage-backends-for-mobile-and-web|T-015]]).
+**Finish T-015 on a device** once a game packages for Android/iOS, or **adapt the template to your game** ([[t-001-adapt-the-template|T-001]]).
 
-- **Read for that:** the task's page; for T-001: [[decisions|Decisions]] and the default ADRs, [[spec-001-prototype|Spec 001 template]], [[conventions|Conventions]].
+- **Read for that:** [[t-015-storage-backends-for-mobile-and-web|T-015]] (what is still open); for T-001: [[decisions|Decisions]] and the default ADRs, [[spec-001-prototype|Spec 001 template]], [[conventions|Conventions]].
 - **Tests first:** keep the determinism test green after every change to the simulation.
 
 ## Hints for the next session
 
+- Running the web client: `cargo build -p game_client --target wasm32-unknown-unknown`, then `wasm-bindgen --target web` (CLI 0.2.130, matching the lock) and a page that imports the generated JS; headless Chromium renders it with `--use-angle=swiftshader`. The debug wasm is ~170 MB after bindgen. `cargo clean --target …` wiped all of `target/`, not just that target.
 - The toolchain is pinned at 1.97.1 (`rust-version`); if the default `stable` is older, run cargo as `cargo +1.97.1` (also `cargo +1.97.1 rename-crates …`).
 - Re-run the benchmark before and after simulation changes, on the same machine; afterwards `cargo clean --release`.
 - Save/load and the run lifecycle were tested headless only; nobody has played them in a window yet: worth a check on desktop (F5, F9, Esc → Q → Enter).

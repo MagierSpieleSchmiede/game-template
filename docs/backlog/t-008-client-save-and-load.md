@@ -11,4 +11,4 @@ title: "T-008 — Client: save and load, stored per platform"
 
 **Done when:** Saving and loading works on desktop; storage is abstracted so mobile and web need only their own backend; a refused file (other version, damaged) shows a localised message.
 
-**Result:** `saving.rs` (actions `save` F5/North, `load` F9/West; notices) and `storage.rs` (`SlotStore`, `FileStore`, `MemoryStore`); mobile and web backends follow in [[t-015-storage-backends-for-mobile-and-web|T-015]].
+**Result:** `saving.rs` (actions `save` F5/North, `load` F9/West; notices) and `storage.rs` (`SlotStore`, `FileStore`, `MemoryStore`); mobile and web backends came in [[t-015-storage-backends-for-mobile-and-web|T-015]].
