@@ -31,7 +31,7 @@ description: A template for deterministic Bevy games in Rust — specification, 
 | Testing | [[test-strategy\|Test strategy]] · [[headless-integration-test\|Headless integration test]] · [[determinism-test\|Determinism test]] · [[benchmarks\|Benchmarks]] |
 | Planning | [[status\|Status]] · [[backlog\|Backlog]] · [[roadmap\|Roadmap & milestones]] · [[extension-points\|Extension points]] |
 | Problems | [[problem-log\|Problem log]] |
-| Conventions | [[conventions\|Conventions]] · [[adr-nnnn\|ADR template]] · [[p-nnn\|P template]] |
+| Conventions | [[conventions\|Conventions]] · [[adr-nnnn\|ADR template]] · [[p-nnn\|P template]] · [[t-nnn\|Task template]] |
 | Glossary | [[glossary\|Glossary]] — terms from intent to rollback |
 
 ## Using this template for a new game

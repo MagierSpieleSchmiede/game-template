@@ -12,7 +12,7 @@ title: "Conventions — how pages, ADRs and P-entries are written"
 | --- | --- |
 | Why a decision was made | the ADR |
 | The invariants of the simulation | [[simulation-model\|Simulation model]] |
-| What a task is and needs | [[backlog\|Backlog]] |
+| What a task is and needs | its page in `backlog/`, listed in the [[backlog\|Backlog]] |
 | What was last done, what comes next | [[status\|Status]] |
 | Open questions | [[problem-log\|Problem log]] |
 | Terms | [[glossary\|Glossary]] |
@@ -24,6 +24,10 @@ title: "Conventions — how pages, ADRs and P-entries are written"
 ## ADRs
 
 One decision per ADR, following [[adr-nnnn|ADR template]], with a row in [[decisions|Decisions]]. Status is `proposed`, `accepted`, `default` or `superseded` (meanings in [[decisions|Decisions]]); an accepted ADR is only superseded by a new ADR. A `default` ADR adds a **To replace** section naming the code and docs it owns (ADR-0012).
+
+## Tasks
+
+One task per page in `backlog/`, following [[t-nnn|Task template]], with a row in the [[backlog|Backlog]]. Scope `game` (done once per game made from the template) or `template` (improves the template). Status `open`, `in progress` or `done`, kept the same on the page and in the row.
 
 ## P-entries
 

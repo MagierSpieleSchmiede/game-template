@@ -7,7 +7,7 @@ You are working on a game built from **Magier SpieleSchmiede's game template**: 
 ## Starting and ending a session
 
 1. **Start:** read `docs/status.md`. It is the handover of the last session: what was done, the next task, which pages it needs, hints. Read exactly those pages, no more. Where code contradicts a page, the code wins; then fix the page.
-2. **Work** following the flow in `docs/backlog.md` (tests first, gates green, then update vault and backlog).
+2. **Work** following the flow in `docs/backlog/backlog.md` (tests first, gates green, then update vault and backlog).
 3. **End:** check `target/` (below), then **overwrite** the handover in `docs/status.md`: what you did, the next task, which pages it needs, what the next session must know. Keep it short; history belongs in the milestone's implementation log.
 
 Regardless of the task:
@@ -20,7 +20,7 @@ Regardless of the task:
 | Page | what for |
 | --- | --- |
 | `docs/index.md` | content map of the vault |
-| `docs/backlog.md` | all tasks, dependencies, flow per item |
+| `docs/backlog/backlog.md` | all tasks as a table (one page per task in `docs/backlog/`), dependencies, flow per item |
 | `docs/architecture/simulation-model.md` | the invariants and the tick chain |
 | `docs/specifications/spec-001-prototype.md` | toolchain, scope, requirements, acceptance criteria |
 | `docs/decisions/decisions.md` | all ADRs with status; never re-open an accepted ADR without a new ADR |
@@ -79,6 +79,7 @@ Bevy builds are large: a single debug build puts several gigabytes into `target/
 - **Conventions** are in `docs/templates/conventions.md`: title "topic — the point in half a sentence", front matter with `title:`, references as Obsidian links `[[filename|display text]]`.
 - **One source per fact:** do not copy what another page already says; link to it. The table for that is in the conventions.
 - **Decisions** get no prose, but an ADR following `docs/templates/adr-nnnn.md` and a line in `docs/decisions/decisions.md` (the next free number is listed there).
+- **Tasks** get a page following `docs/templates/t-nnn.md` in `docs/backlog/` and a row in `docs/backlog/backlog.md` (the next free number is listed there).
 - **Open questions** get a page following `docs/templates/p-nnn.md` and a line in `docs/problems/problem-log.md` (the next free number is listed there).
 - **Keep status up to date:** whoever builds something or changes the planning state updates `docs/status.md` and the milestone's implementation log.
 - The vault is in English; identifiers in code are English too.
