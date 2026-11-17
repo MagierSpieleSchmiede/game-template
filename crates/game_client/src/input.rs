@@ -18,6 +18,8 @@ pub enum InputAction {
     MoveRight,
     Confirm,
     Pause,
+    Save,
+    Load,
     ToggleDebug,
 }
 
@@ -30,6 +32,8 @@ impl InputAction {
             "move-right" => Self::MoveRight,
             "confirm" => Self::Confirm,
             "pause" => Self::Pause,
+            "save" => Self::Save,
+            "load" => Self::Load,
             "toggle-debug" => Self::ToggleDebug,
             _ => return None,
         })
@@ -164,6 +168,8 @@ mod tests {
             InputAction::MoveRight,
             InputAction::Confirm,
             InputAction::Pause,
+            InputAction::Save,
+            InputAction::Load,
             InputAction::ToggleDebug,
         ] {
             assert!(!bindings.0[&action].is_empty(), "{action:?} is unbound");

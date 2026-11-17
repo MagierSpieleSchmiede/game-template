@@ -8,22 +8,22 @@ title: "Status — handover: what was last done and what comes next"
 
 ## Last done
 
-**Backlog as a folder (branch `dev-backlog-folder`):**
+**T-008, client save and load (branch `dev-client-save-load`):**
 
-- `docs/backlog/` holds one page per task (template: [[t-nnn|Task template]]) and the index table in `backlog.md`; tasks have a scope: `game` (done once per new game) or `template` (improves the template).
-- T-001–T-007 moved over; new template tasks T-008–T-014 from the last review: client save/load, headless benchmark, client run lifecycle, rename script, non-ASCII font, CI web build of the client, overlay hash only when visible.
+- `game_client/src/storage.rs`: `SlotStore` (named byte slots), `FileStore` (user data folder on Windows/Linux/macOS, found from the environment, atomic writes, slot names cannot leave the folder), `MemoryStore` (Android, iOS, web for now).
+- `game_client/src/saving.rs`: actions `save` (F5/North, while playing or paused) and `load` (F9/West, from the menu too); a localised notice for every outcome, one per refusal reason; after loading the presentation re-observes without interpolating.
+- New task T-015: real storage backends for Android, iOS and the web.
 
 ## Next task
 
-**Adapt the template to your game (first session of the new project):**
+**Adapt the template to your game** ([[t-001-adapt-the-template|T-001]]), or the next `template` task in the [[backlog|Backlog]] (T-009 onward).
 
-- **Clarify first:** the game's concept, scope and platforms; then decide each template default (`default` rows in Decisions).
-- **Read for that:** [[decisions|Decisions]] and the default ADRs; [[spec-001-prototype|Spec 001 template]]; [[conventions|Conventions]].
+- **Read for that:** the task's page; for T-001: [[decisions|Decisions]] and the default ADRs, [[spec-001-prototype|Spec 001 template]], [[conventions|Conventions]].
 - **Tests first:** keep the determinism test green after every change to the simulation.
 
 ## Hints for the next session
 
-- Rename `game_sim`/`game_client` everywhere (Cargo.toml, workflows, docs) to the game's name.
-- Replacing the example game means rewriting `game_sim/src/game/` and `game_client/src/presentation.rs`; the contract is in `game/mod.rs`. The core must not name genre concepts.
-- The simulation must keep building for `wasm32-unknown-unknown`; check `docs/architecture/platforms.md` before adding dependencies.
-- Open template work is in the [[backlog|Backlog]] with scope `template` (T-008–T-014); e.g. the client cannot save or load yet (T-008), and the built-in font covers ASCII only (T-012).
+- The toolchain is pinned at 1.97.1 (`rust-version`); if the default `stable` is older, run cargo as `cargo +1.97.1`.
+- Save/load was tested headless only; nobody has played it in a window yet: worth a check on desktop (F5, F9, a damaged `quicksave.save`).
+- Rename `game_sim`/`game_client` everywhere for a new game; the save folder follows the client crate name (`storage::APP_FOLDER`).
+- Replacing the example game means rewriting `game_sim/src/game/` and `game_client/src/presentation.rs` (keep `Frames` and `observe_restored`, the saving module uses them).

@@ -56,7 +56,13 @@ mod tests {
     #[test]
     fn english_has_every_key_the_client_uses() {
         let l = Localisation::english();
-        for key in ["menu-title", "menu-start", "paused", "debug-overlay"] {
+        for key in [
+            "menu-title",
+            "menu-start",
+            "paused",
+            "save-load-hint",
+            "debug-overlay",
+        ] {
             assert_ne!(l.text(key, &[]), key, "en.txt lacks {key}");
         }
     }

@@ -6,7 +6,7 @@
 //!
 //! | Module | Genre-neutral? |
 //! | --- | --- |
-//! | `screens`, `input`, `localisation`, `overlay`, `kv` | yes: keep, extend |
+//! | `screens`, `input`, `localisation`, `overlay`, `kv`, `saving`, `storage` | yes: keep, extend |
 //! | `presentation` | no: the example game's look; replace with `game_sim::game` |
 
 mod input;
@@ -14,7 +14,9 @@ mod kv;
 mod localisation;
 mod overlay;
 mod presentation;
+mod saving;
 mod screens;
+mod storage;
 
 use bevy::prelude::*;
 
@@ -32,6 +34,7 @@ fn main() {
             screens::plugin,
             presentation::plugin,
             overlay::plugin,
+            saving::plugin,
         ))
         .run();
 }

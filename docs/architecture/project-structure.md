@@ -46,6 +46,7 @@ Inside `game_client`:
 | `input` | Devices → actions; bindings in `data/input/` (ADR-0016) | yes |
 | `localisation`, `kv` | Texts by key from `data/locales/` (ADR-0016) | yes |
 | `overlay` | Tick, state hash, frame rate (ADR-0016) | yes |
+| `saving`, `storage` | Save and load actions, refusal notices; named byte slots per platform (ADR-0016) | yes |
 | `presentation` | The example game's camera, visuals and intent (ADR-0013) | no: replace with the game |
 
 Rules: `game_sim` has no dependency on rendering, windowing, audio or threads; `game_client` never simulates. New modules follow the same one-responsibility split.

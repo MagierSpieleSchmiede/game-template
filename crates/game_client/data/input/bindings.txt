@@ -7,4 +7,6 @@ move-left = key:KeyA key:ArrowLeft pad:DPadLeft
 move-right = key:KeyD key:ArrowRight pad:DPadRight
 confirm = key:Enter key:Space pad:South
 pause = key:Escape pad:Start
+save = key:F5 pad:North
+load = key:F9 pad:West
 toggle-debug = key:F3 pad:Select

@@ -110,6 +110,13 @@ fn observe_tick(world: &mut World) {
     frames.hash = hash;
 }
 
+/// Lets the presentation follow a restored state (a loaded save): observes
+/// it with nothing to interpolate from, so units jump instead of sliding.
+pub fn observe_restored(world: &mut World) {
+    world.resource_mut::<Frames>().current = None;
+    observe_tick(world);
+}
+
 /// Spawns the arena floor once the first observation says how large it is.
 fn spawn_floor(
     mut commands: Commands,

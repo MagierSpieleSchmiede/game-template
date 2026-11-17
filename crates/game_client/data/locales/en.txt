@@ -4,4 +4,16 @@
 menu-title = Game Template
 menu-start = Press Enter or Start to play
 paused = Paused - press Esc or Start to continue
+save-load-hint = F5 or Y: save | F9 or X: load
+save-done = Saved
+save-failed = Could not save: {reason}
+load-done = Loaded
+load-none = There is no save yet
+load-failed = Could not read the save: {reason}
+load-refused-not-a-game-file = The save is not a file of this game
+load-refused-format-version = The save has file format {found}; this version reads {expected}
+load-refused-wrong-kind = The file is not a save
+load-refused-sim-version = The save is from another version of the game ({found}; this is {expected})
+load-refused-corrupt = The save is damaged
+load-refused-hash = The save is damaged or was edited
 debug-overlay = tick {tick} | state {hash} | {fps} fps
