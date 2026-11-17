@@ -46,5 +46,5 @@ Reading them:
 
 - About 8 µs per tick is fixed cost of Bevy's schedules with almost nothing to do; above that, cost grows roughly linearly with units (about 0.11 µs per unit and tick).
 - Restore costs about six captures, since it despawns and respawns every simulation entity.
-- The state hash costs about 66 ns per unit, almost four times a capture. It runs once per tick in the client (overlay, see [[t-014-overlay-hash-only-when-visible|T-014]]) and would run per tick in desync checks, so it is the first thing to look at if large scenarios matter.
+- The state hash costs about 66 ns per unit, almost four times a capture. The client computes it once per tick only while the debug overlay is visible ([[t-014-overlay-hash-only-when-visible|T-014]]); desync checks would run it per tick, so it is the first thing to look at if large scenarios matter.
 - Even at 1000 units, an 8-tick rollback takes about 1.1 ms of a 16.7 ms frame: the example game leaves rollback plenty of headroom. A real game re-measures with its own systems.

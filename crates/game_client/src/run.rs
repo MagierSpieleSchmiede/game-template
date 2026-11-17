@@ -74,7 +74,10 @@ mod tests {
         .insert_resource(setup)
         .insert_resource(Localisation::english())
         .init_resource::<ActionState>()
-        .init_resource::<Frames>()
+        .insert_resource(Frames {
+            hash_wanted: true,
+            ..default()
+        })
         .add_plugins(crate::screens::plugin)
         .add_systems(FixedPreUpdate, crate::presentation::write_intent)
         .add_systems(FixedPostUpdate, crate::presentation::observe_tick);
@@ -150,7 +153,11 @@ mod tests {
         let fresh = state_hash(headless_app(second).world_mut());
         assert_eq!(state_hash(app.world_mut()), fresh);
         let frames = app.world().resource::<Frames>();
-        assert_eq!(frames.hash, fresh, "the presentation shows the new run");
+        assert_eq!(
+            frames.hash,
+            Some(fresh),
+            "the presentation shows the new run"
+        );
         let ids: Vec<SimId> = frames
             .current
             .as_ref()

@@ -21,12 +21,14 @@ use crate::input::ActionState;
 use crate::run::RunSetup;
 
 /// The observations after the last two ticks, and the state hash after the
-/// last one (for the debug overlay).
+/// last one for the debug overlay: computed only while `hash_wanted` is set
+/// (the overlay is visible), since it reads the whole world.
 #[derive(Debug, Default, Resource)]
 pub struct Frames {
     pub previous: Option<Observation>,
     pub current: Option<Observation>,
-    pub hash: u64,
+    pub hash: Option<u64>,
+    pub hash_wanted: bool,
 }
 
 /// The visual of one simulation unit; keyed by its ID, never its `Entity`.
@@ -120,11 +122,20 @@ pub(crate) fn write_intent(
 pub(crate) fn observe_tick(world: &mut World) {
     let viewer = world.resource::<RunSetup>().viewer;
     let observation = observe(world, viewer);
-    let hash = state_hash(world);
     let mut frames = world.resource_mut::<Frames>();
     frames.previous = frames.current.take();
     frames.current = Some(observation);
-    frames.hash = hash;
+    refresh_hash(world);
+}
+
+/// Sets the state hash in [`Frames`] to the world's if it is wanted, else
+/// clears it.
+pub fn refresh_hash(world: &mut World) {
+    let hash = world
+        .resource::<Frames>()
+        .hash_wanted
+        .then(|| state_hash(world));
+    world.resource_mut::<Frames>().hash = hash;
 }
 
 /// Lets the presentation follow a restored state (a loaded save): observes
