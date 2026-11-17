@@ -18,7 +18,7 @@ pub struct SimId(pub i64);
 /// The spawn counter: the last `SimId` handed out. A resource, so every spawn
 /// in the run (scenario, projectiles, respawns) draws from the same sequence
 /// and a rollback snapshot restores it together with the world.
-#[derive(Debug, Clone, Default, Resource)]
+#[derive(Debug, Clone, Default, PartialEq, Resource, Serialize, Deserialize)]
 pub struct SimIdCounter(i64);
 
 impl SimIdCounter {

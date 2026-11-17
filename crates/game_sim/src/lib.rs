@@ -4,7 +4,7 @@
 //!
 //! - **The core** (every module except `game`): tick counting, stable IDs,
 //!   the seeded RNG, intents and who may send them, scenarios, snapshots,
-//!   state hashing, replays,
+//!   state hashing, save and replay files, replays,
 //!   rollback and the observation. It knows nothing about any genre.
 //! - **The game** (`game`): the gameplay itself. The template ships a small
 //!   example (units moving in an arena) as a *template default* (ADR-0013);
@@ -17,6 +17,7 @@
 
 pub mod checksum;
 pub mod control;
+pub mod file;
 pub mod game;
 pub mod headless;
 pub mod ids;
@@ -25,6 +26,7 @@ pub mod observation;
 pub mod replay;
 pub mod rng;
 pub mod rollback;
+pub mod save;
 pub mod scenario;
 pub mod schedule;
 pub mod snapshot;
@@ -67,8 +69,8 @@ impl Plugin for SimPlugin {
                 FixedUpdate,
                 (
                     tick::advance_tick,
-                    intent::freeze_intents,
                     replay::record_tick,
+                    intent::freeze_intents,
                 )
                     .chain()
                     .in_set(schedule::SimSet::Input),

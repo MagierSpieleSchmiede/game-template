@@ -82,7 +82,7 @@ fn same_scenario_same_end_state() {
 fn scripted_run_matches_committed_hash() {
     let hash = state_hash(scripted_run(42).world_mut());
     assert_eq!(
-        hash, 0x57d5_78ba_8574_023e,
+        hash, 0xb230_ef1f_81c8_3bc5,
         "state hash changed: {hash:#018x}"
     );
 }

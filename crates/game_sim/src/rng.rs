@@ -9,7 +9,7 @@ use bevy::prelude::*;
 
 /// The one seeded RNG resource. Created from the scenario seed; rollback
 /// restores it by replaying ticks from a snapshot.
-#[derive(Debug, Clone, Resource)]
+#[derive(Debug, Clone, PartialEq, Resource, serde::Serialize, serde::Deserialize)]
 pub struct SimRng {
     state: [u64; 4],
 }
@@ -21,6 +21,13 @@ impl SimRng {
         Self {
             state: [sm.next(), sm.next(), sm.next(), sm.next()],
         }
+    }
+
+    /// The full generator state, for the state hash. Hashing only the next
+    /// output would miss three of the four words: Xoshiro256** draws its next
+    /// output from one word alone, but every word shapes the draws after it.
+    pub fn state(&self) -> [u64; 4] {
+        self.state
     }
 
     /// Next raw u64. The only randomness source in the simulation.

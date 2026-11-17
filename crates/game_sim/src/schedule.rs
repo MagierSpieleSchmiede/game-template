@@ -9,7 +9,8 @@ use bevy::prelude::*;
 /// [`SimSet::Update`] and may order them there with its own sets.
 #[derive(SystemSet, Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum SimSet {
-    /// Count the tick, freeze the intents, record them for replays.
+    /// Count the tick, record the arrived intents for replays, check and
+    /// freeze them.
     Input,
     /// The game's systems.
     Update,

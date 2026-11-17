@@ -12,7 +12,7 @@ Every task is one line in the table, with its dependencies. The flow per item:
 | ID | Task | Depends on | Read for that |
 | --- | --- | --- | --- |
 | T-001 | Adapt this template to the new game: names, spec, README | — | [[spec-001-prototype\|Spec 001]] |
-| T-002 | Decide every template default: accept, replace or drop (ADR-0006, 0013–0016) | T-001 | [[decisions\|Decisions]], ADR-0012 |
+| T-002 | Decide every template default: accept, replace or drop (ADR-0006, 0013–0017) | T-001 | [[decisions\|Decisions]], ADR-0012 |
 | T-003 | Replace the example game in `game_sim::game` with the game's core loop, keeping the contract | T-002 | [[simulation-model\|Simulation model]], ADR-0013 |
 | T-004 | The game's `Action`s and their input actions | T-003 | [[intent-and-controls\|Intent & controls]] |
 | T-005 | The game's visibility filter in `game::observe` | T-003 | [[observation\|Observation]] |

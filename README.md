@@ -14,9 +14,10 @@ It ships the decisions and structure that every game of ours builds on:
 - **A deterministic, headless tick simulation** in its own crate (`game_sim`):
   same start state, same inputs, same seed → same end state, byte for byte.
 - **One seeded RNG resource** for all randomness in the simulation.
-- **Snapshots, replays and rollback**, tested: restoring a snapshot and
-  re-running, playing back a recording, and rolling back a late intent all
-  reach the same state hash.
+- **Snapshots, save and replay files, rollback**, tested: restoring a snapshot
+  and re-running, loading a save, playing back a recording, and rolling back a
+  late intent all reach the same state hash. A committed regression replay is
+  played back by CI on every platform.
 - **A documented vault** (`docs/`, published as a website with Quartz):
   specification, architecture, decisions (ADRs), open problems, and a
   handover page ([Status](docs/status.md)) that every session reads first.

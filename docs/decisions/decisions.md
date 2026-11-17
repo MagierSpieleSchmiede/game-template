@@ -3,7 +3,7 @@ title: "Decisions — all ADRs with their status"
 ---
 # Decisions — all ADRs with their status
 
-One row per ADR; the next free number is **0017**.
+One row per ADR; the next free number is **0018**.
 
 | Status | Meaning |
 | --- | --- |
@@ -30,5 +30,6 @@ One row per ADR; the next free number is **0017**.
 | [[adr-0014-sixty-ticks-per-second-with-f32\|0014]] | 60 ticks per second with f32 maths | **default** |
 | [[adr-0015-avian-for-physics\|0015]] | Avian for physics | **default** |
 | [[adr-0016-client-shell\|0016]] | The client shell: screens, input actions, localisation, debug overlay | **default** |
+| [[adr-0017-postcard-files-with-a-versioned-header\|0017]] | Save and replay files: postcard behind a versioned header | **default** |
 
 The `accepted` rows are the **solid decisions** of the template. The `default` rows are the first thing a new game decides.

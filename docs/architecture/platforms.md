@@ -13,7 +13,8 @@ Targets: **Windows, Linux, macOS, Android, iOS** (tier 1: full gates), **Web (wa
 
 Rules:
 
-- Nothing goes in that excludes a platform; every new dependency is checked for platform support before it enters `Cargo.toml`.
+- Nothing goes in that excludes a platform; every new dependency is checked for platform support before it enters `Cargo.toml`. Checked so far beyond Bevy and Avian: `serde`, and `postcard` (no_std with `alloc`; builds for every target, ADR-0017).
+- The simulation never touches a file system: saves and replays are bytes; the client stores them where the platform allows.
 - The client uses Bevy's default features (window, renderer, winit); the simulation does not (ADR-0005).
 - On Android, Bevy links `android-activity`; the `android-check` feature of `game_sim` exists only so CI can check the crate alone.
 
